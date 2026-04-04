@@ -65,3 +65,34 @@
 
 - **Areas to watch**:
   - Environment variables use `NEXT_PUBLIC_` prefix — these are exposed to the browser (intentional for Supabase anon key and API URL, but ensure no secrets use this prefix)
+
+## Backend Concern (invoice-api)
+
+### 11. Rate Limit Per-User on Presign
+- **Location**: `invoice-api/app/api/routes/batches.py` — `cache.is_rate_limited(user_id)`
+- **Issue**: 10 presign/minute per user may be too aggressive for heavy users with many small batches.
+- **Risk**: Low — configurable via `RATE_LIMIT_PRESIGN_PER_MINUTE`
+
+### 12. Presign Semaphore = 30
+- **Location**: `invoice-api/app/api/routes/batches.py` — `_PRESIGN_SEMAPHORE`
+- **Issue**: 30 concurrent presign operations may exhaust Supabase Storage API rate limits under load.
+- **Risk**: Medium — depends on Supabase storage API throughput
+
+## Backend Concern (invoice-pipeline)
+
+### 13. Single Redis for Multiple Purposes
+- **Location**: `docker-compose.yml`
+- **Issue**: Redis serves as backpressure, rate limiting, pub/sub, AND Celery broker all on the same instance. A Redis failure cascades to every system layer.
+- **Risk**: Low for local dev, Medium for production
+
+### 14. Promotion Worker Concurrency = 1
+- **Location**: `docker-compose.yml` — `worker-promotion` with `worker-promotion` command: `--concurrency=1`, 4 replicas
+- **Issue**: Only 1 concurrent promotion per replica. 4 replicas give at most 4 concurrent promotions. May bottleneck when many documents complete simultaneously.
+- **Risk**: Medium — depends on promotion throughput requirements
+
+## System Architecture Observation
+
+### 15. Six Repos to Coordinate
+- **Location**: All repos
+- **Issue**: `invoice-web`, `invoice-api`, `invoice-pipeline`, `invoice-infra`, `invoice-processors`, `invoice-models` — each with its own `pyproject.toml`, tests, and release cycle. Coordination required for cross-repo changes.
+- **Risk**: Medium — `invoice-models` shared dependency means changing a model requires coordinated releases
