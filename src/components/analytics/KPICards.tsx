@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export interface KPIData {
@@ -14,19 +15,21 @@ export interface KPICardsProps {
 }
 
 export function KPICards({ data, isLoading }: KPICardsProps) {
+  const t = useTranslations('analytics');
+
   const cards = [
     {
-      label: 'Total de documentos',
+      key: 'total' as const,
       value: data?.total ?? 0,
       format: (v: number) => v.toLocaleString('pt-BR'),
     },
     {
-      label: 'Taxa de sucesso',
+      key: 'success_rate' as const,
       value: data?.successRate ?? 0,
       format: (v: number) => `${v.toFixed(1)}%`,
     },
     {
-      label: 'Falhas',
+      key: 'failures' as const,
       value: data?.failures ?? 0,
       format: (v: number) => v.toLocaleString('pt-BR'),
     },
@@ -36,10 +39,12 @@ export function KPICards({ data, isLoading }: KPICardsProps) {
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       {cards.map((card) => (
         <div
-          key={card.label}
+          key={card.key}
           className="rounded-lg border border-outline bg-surface p-5"
         >
-          <p className="text-sm text-on-surface-variant">{card.label}</p>
+          <p className="text-sm text-on-surface-variant">
+            {t(`kpi_${card.key}`)}
+          </p>
           {isLoading ? (
             <Skeleton className="h-8 w-20 mt-1" />
           ) : (

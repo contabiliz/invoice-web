@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslations } from 'next-intl';
 import {
   LineChart,
   Line,
@@ -15,14 +16,7 @@ import {
 } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { TimeSeriesPreset } from '@/lib/api/analytics-client';
-import type { AnalyticsTimeSeriesResponse, AnalyticsTimeSeriesPoint } from '@/lib/api/types';
-
-const PRESETS: { key: TimeSeriesPreset; label: string }[] = [
-  { key: '7d', label: '7 dias' },
-  { key: '30d', label: '30 dias' },
-  { key: '90d', label: '90 dias' },
-  { key: 'mtd', label: 'Mes' },
-];
+import type { AnalyticsTimeSeriesPoint } from '@/lib/api/types';
 
 export interface TimeSeriesChartProps {
   data: AnalyticsTimeSeriesPoint[] | null;
@@ -30,6 +24,8 @@ export interface TimeSeriesChartProps {
   preset: TimeSeriesPreset;
   onPresetChange: (preset: TimeSeriesPreset) => void;
 }
+
+const PRESET_KEYS: TimeSeriesPreset[] = ['7d', '30d', '90d', 'mtd'];
 
 function formatDateLabel(dateStr: string): string {
   const d = new Date(dateStr + 'T00:00:00');
@@ -42,6 +38,7 @@ export function TimeSeriesChart({
   preset,
   onPresetChange,
 }: TimeSeriesChartProps) {
+  const t = useTranslations('analytics');
   const [chartType, setChartType] = useState<'line' | 'bar'>('line');
 
   const chartData =
@@ -59,20 +56,20 @@ export function TimeSeriesChart({
     <div className="rounded-lg border border-outline bg-surface p-5">
       <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
         <h3 className="text-sm font-semibold text-on-surface">
-          Volume de processamento
+          {t('chart_title')}
         </h3>
         <div className="flex gap-2">
-          {PRESETS.map((p) => (
+          {PRESET_KEYS.map((p) => (
             <button
-              key={p.key}
-              onClick={() => onPresetChange(p.key)}
+              key={p}
+              onClick={() => onPresetChange(p)}
               className={`px-3 py-1 text-xs rounded-md transition-all font-mono tabular-nums ${
-                preset === p.key
+                preset === p
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-surface-variant text-on-surface-variant hover:bg-surface-variant/80'
               }`}
             >
-              {p.label}
+              {t(`preset_${p}`)}
             </button>
           ))}
         </div>
@@ -84,18 +81,20 @@ export function TimeSeriesChart({
         </div>
       ) : chartData.length === 0 ? (
         <p className="text-center text-sm text-on-surface-variant py-12">
-          Nenhum dado disponivel para o periodo selecionado.
+          {t('chart_empty')}
         </p>
       ) : (
         <>
           <div className="flex justify-end mb-2">
             <button
               onClick={() =>
-                setChartType((t) => (t === 'line' ? 'bar' : 'line'))
+                setChartType((c) => (c === 'line' ? 'bar' : 'line'))
               }
               className="px-2 py-1 text-xs text-on-surface-variant hover:text-on-surface rounded border border-outline bg-transparent"
             >
-              {chartType === 'line' ? 'Barras' : 'Linhas'}
+              {chartType === 'line'
+                ? t('chart_toggle_bars')
+                : t('chart_toggle_lines')}
             </button>
           </div>
 
@@ -113,7 +112,6 @@ export function TimeSeriesChart({
                   stroke="#3b82f6"
                   strokeWidth={2}
                   dot={false}
-                  name="Total"
                 />
                 <Line
                   type="monotone"
@@ -121,7 +119,6 @@ export function TimeSeriesChart({
                   stroke="#22c55e"
                   strokeWidth={2}
                   dot={false}
-                  name="Sucesso"
                 />
                 <Line
                   type="monotone"
@@ -129,7 +126,6 @@ export function TimeSeriesChart({
                   stroke="#ef4444"
                   strokeWidth={2}
                   dot={false}
-                  name="Falha"
                 />
               </LineChart>
             ) : (
@@ -139,9 +135,9 @@ export function TimeSeriesChart({
                 <YAxis fontSize={12} fontFamily="'Geist Mono', monospace" />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="total" fill="#3b82f6" name="Total" />
-                <Bar dataKey="success" fill="#22c55e" name="Sucesso" />
-                <Bar dataKey="failure" fill="#ef4444" name="Falha" />
+                <Bar dataKey="total" fill="#3b82f6" />
+                <Bar dataKey="success" fill="#22c55e" />
+                <Bar dataKey="failure" fill="#ef4444" />
               </BarChart>
             )}
           </ResponsiveContainer>

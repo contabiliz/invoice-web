@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { AnalyticsDocumentBreakdown } from '@/lib/api/types';
 
@@ -30,65 +31,33 @@ function formatDate(iso: string): string {
   });
 }
 
-function getDocTypeLabel(type: string): string {
-  switch (type) {
-    case 'xml':
-      return 'XML';
-    case 'pdf':
-      return 'PDF';
-    case 'img':
-      return 'Imagem';
-    default:
-      return type;
-  }
-}
+const DOC_TYPE_MAP: Record<string, string> = {
+  xml: 'XML',
+  pdf: 'PDF',
+  img: 'Imagem',
+};
 
-function extractResultLabel(result: string): string {
-  switch (result) {
-    case 'success':
-      return 'Sucesso';
-    case 'failed':
-      return 'Falhou';
-    case 'partial':
-      return 'Parcial';
-    case 'skipped':
-      return 'Ignorado';
-    default:
-      return result;
-  }
-}
+const STATUS_COLOR_MAP: Record<string, string> = {
+  completed: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
+  failed: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+  processing: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+  queued: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+};
 
-function statusBadgeColor(status: string): string {
-  switch (status) {
-    case 'completed':
-      return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400';
-    case 'failed':
-      return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
-    case 'processing':
-      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
-    default:
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400';
-  }
-}
+const EXTRACTION_COLOR_MAP: Record<string, string> = {
+  success: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
+  failed: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+  partial: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+};
 
-function extractionResultColor(result: string): string {
-  switch (result) {
-    case 'success':
-      return 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400';
-    case 'failed':
-      return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400';
-    case 'partial':
-      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400';
-    default:
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400';
-  }
-}
+const DEFAULT_BADGE = 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400';
 
 export function DocumentTable({
   data,
   isLoading,
   pagination,
 }: DocumentTableProps) {
+  const t = useTranslations('analytics');
   const totalPages = pagination
     ? Math.ceil(pagination.total / pagination.pageSize)
     : 0;
@@ -97,7 +66,7 @@ export function DocumentTable({
     <div className="rounded-lg border border-outline bg-surface overflow-hidden">
       <div className="px-5 py-3 border-b border-outline">
         <h3 className="text-sm font-semibold text-on-surface">
-          Detalhamento por documento
+          {t('table_title')}
         </h3>
       </div>
 
@@ -106,19 +75,19 @@ export function DocumentTable({
           <thead>
             <tr className="border-b border-outline bg-surface-variant/30">
               <th className="text-left px-5 py-3 text-on-surface-variant font-medium">
-                Tipo
+                {t('table_col_type')}
               </th>
               <th className="text-left px-5 py-3 text-on-surface-variant font-medium">
-                Status
+                {t('table_col_status')}
               </th>
               <th className="text-left px-5 py-3 text-on-surface-variant font-medium">
-                Tempo
+                {t('table_col_time')}
               </th>
               <th className="text-left px-5 py-3 text-on-surface-variant font-medium">
-                Resultado
+                {t('table_col_result')}
               </th>
               <th className="text-right px-5 py-3 text-on-surface-variant font-medium">
-                Data
+                {t('table_col_date')}
               </th>
             </tr>
           </thead>
@@ -147,13 +116,13 @@ export function DocumentTable({
               data.map((doc) => (
                 <tr key={doc.document_id} className="border-b border-outline">
                   <td className="px-5 py-3 font-mono tabular-nums text-on-surface">
-                    {getDocTypeLabel(doc.type)}
+                    {DOC_TYPE_MAP[doc.type] ?? doc.type}
                   </td>
                   <td className="px-5 py-3">
                     <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium font-mono tabular-nums ${statusBadgeColor(doc.status)}`}
+                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium font-mono tabular-nums ${STATUS_COLOR_MAP[doc.status] ?? DEFAULT_BADGE}`}
                     >
-                      {extractResultLabel(doc.status)}
+                      {t(`status_${doc.status}`, { defaultValue: doc.status })}
                     </span>
                   </td>
                   <td className="px-5 py-3 font-mono tabular-nums text-on-surface">
@@ -161,9 +130,9 @@ export function DocumentTable({
                   </td>
                   <td className="px-5 py-3">
                     <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium font-mono tabular-nums ${extractionResultColor(doc.extraction_result)}`}
+                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium font-mono tabular-nums ${EXTRACTION_COLOR_MAP[doc.extraction_result] ?? DEFAULT_BADGE}`}
                     >
-                      {extractResultLabel(doc.extraction_result)}
+                      {t(`extraction_${doc.extraction_result}`, { defaultValue: doc.extraction_result })}
                     </span>
                   </td>
                   <td className="px-5 py-3 text-right font-mono tabular-nums text-on-surface-variant">
@@ -177,7 +146,7 @@ export function DocumentTable({
                   colSpan={5}
                   className="px-5 py-12 text-center text-sm text-on-surface-variant"
                 >
-                  Nenhum documento encontrado.
+                  {t('table_empty')}
                 </td>
               </tr>
             )}
@@ -188,7 +157,7 @@ export function DocumentTable({
       {pagination && totalPages > 1 && (
         <div className="flex items-center justify-between px-5 py-3 border-t border-outline bg-surface-variant/20">
           <p className="text-xs text-on-surface-variant font-mono tabular-nums">
-            {pagination.total} documentos
+            {t('table_pagination', { total: pagination.total })}
           </p>
           <div className="flex gap-1">
             <button
@@ -196,7 +165,7 @@ export function DocumentTable({
               onClick={() => pagination.onPageChange(pagination.page - 1)}
               className="px-3 py-1 text-xs rounded border border-outline disabled:opacity-40 disabled:cursor-not-allowed hover:bg-surface-variant/50 text-on-surface-variant"
             >
-              Anterior
+              {t('table_prev')}
             </button>
             {Array.from({ length: Math.min(totalPages, 5) }).map((_, i) => {
               const pageNum = i + 1;
@@ -219,7 +188,7 @@ export function DocumentTable({
               onClick={() => pagination.onPageChange(pagination.page + 1)}
               className="px-3 py-1 text-xs rounded border border-outline disabled:opacity-40 disabled:cursor-not-allowed hover:bg-surface-variant/50 text-on-surface-variant"
             >
-              Proxima
+              {t('table_next')}
             </button>
           </div>
         </div>
