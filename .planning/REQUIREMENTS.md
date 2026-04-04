@@ -1,0 +1,65 @@
+# Requirements: Contabiliz Invoice Web — Analytics & Batch History
+
+**Defined:** 2026-04-04
+**Core Value:** The upload → processing pipeline must never drop data: every document uploaded must be processed and its results reliably available to the user.
+
+## v1 Requirements
+
+### Analytics
+
+- [ ] **ANAL-01**: Dashboard displays high-level KPIs (total documents processed, success rate, failure count) for the authenticated user
+- [ ] **ANAL-02**: Time-series chart shows processing volume over time with default month-to-date range and 7/30/90 day preset buttons
+- [ ] **ANAL-03**: Per-document breakdown table shows granular details: document type, processing status, processing time, extraction result
+- [ ] **ANAL-04**: User can export processing data as CSV or PDF summary
+
+### Batch History
+
+- [ ] **HIST-01**: User can view a listing of all past batches with status, date, and document count
+- [ ] **HIST-02**: User can filter batch history by status, date range, and document type
+- [ ] **HIST-03**: User can re-process a failed batch from the history listing
+
+## v2 Requirements
+
+### Notifications
+
+- **NOTF-01**: User receives email notification when batch processing completes
+- **NOTF-02**: User can configure notification preferences
+
+### Auth Enhancements
+
+- **AUTH-V2-01**: Social auth (Google, GitHub) login
+- **AUTH-V2-02**: Password recovery via email (functional, not just link)
+- **AUTH-V2-03**: MFA / 2FA support
+
+### User Profile
+
+- **PROF-V2-01**: Profile management and user data editing
+
+## Out of Scope
+
+| Feature | Reason |
+|---------|--------|
+| Real-time push notifications on batch completion | Deferred to v2, polling sufficient for now |
+| Batch completion webhooks | Not requested, high complexity |
+| Mobile app | Web-first, accountant workflows on desktop |
+
+## Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| ANAL-01 | Phase 1 | Pending |
+| ANAL-02 | Phase 1 | Pending |
+| ANAL-03 | Phase 1 | Pending |
+| ANAL-04 | Phase 1 | Pending |
+| HIST-01 | Phase 2 | Pending |
+| HIST-02 | Phase 2 | Pending |
+| HIST-03 | Phase 2 | Pending |
+
+**Coverage:**
+- v1 requirements: 7 total
+- Mapped to phases: 7
+- Unmapped: 0 ✓
+
+---
+*Requirements defined: 2026-04-04*
+*Last updated: 2026-04-04 after v1.0 milestone initialization*
