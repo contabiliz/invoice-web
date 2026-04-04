@@ -48,7 +48,9 @@ pnpm-debug.log*
 
 # ─── Claude Code ─────────────────────────────────────────────────────────────
 .claude/
+.agents/
 skills-lock.json
+.openclaude-profile.json
 
 # ─── Next.js internals ───────────────────────────────────────────────────────
 next-env.d.ts

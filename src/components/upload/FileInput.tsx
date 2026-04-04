@@ -12,14 +12,7 @@ export function FileInput({ onFilesSelected }: FileInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const t = useTranslations('upload');
 
-  const acceptString = [
-    '.xml',
-    '.pdf',
-    'image/jpeg',
-    'image/png',
-    'image/webp',
-    'image/tiff',
-  ].join(',');
+  const acceptString = ACCEPTED_MIME_TYPES.join(',');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);

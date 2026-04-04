@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import type { BatchStatus } from '@/lib/api/types';
 import type { BatchUIPhase } from '@/hooks/useBatchStatus';
+import { formatRelativeTime } from '@/lib/utils/format';
 
 interface BatchHeaderProps {
   batchId: string;
@@ -28,16 +29,6 @@ const LABEL_KEY_MAP: Partial<Record<BatchStatus, string>> = {
   pending_upload:  'header_status.pending_upload',
 };
 
-function getRelativeTime(isoDate: string, t: (key: string, params?: Record<string, unknown>) => string): string {
-  const diff = Date.now() - new Date(isoDate).getTime();
-  const minutes = Math.floor(diff / 60_000);
-  const hours = Math.floor(diff / 3_600_000);
-
-  if (minutes < 1) return t('time.less_than_minute');
-  if (minutes < 60) return t('time.minutes', { count: minutes, plural: minutes > 1 ? 's' : '' });
-  if (hours < 24) return t('time.hours', { count: hours, plural: hours > 1 ? 's' : '' });
-  return t('time.days', { count: Math.floor(hours / 24) });
-}
 
 export function BatchHeader({ batchId, status, createdAt, phase, isLoading }: BatchHeaderProps) {
   const t = useTranslations('batch-status');
@@ -79,7 +70,7 @@ export function BatchHeader({ batchId, status, createdAt, phase, isLoading }: Ba
       {/* Tempo relativo */}
       {createdAt && (
         <span className="text-xs text-[var(--color-text-secondary)] ml-auto">
-          {t('header.created_ago', { time: getRelativeTime(createdAt, t) })}
+          Criado {formatRelativeTime(createdAt)}
         </span>
       )}
     </div>

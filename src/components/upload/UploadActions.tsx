@@ -39,6 +39,9 @@ export function UploadActions({
     confirm_error: t('button_retry'),
   }[phase] ?? t('button_submit');
 
+  const primaryButtonClasses =
+    'px-12 py-4 bg-[var(--color-accent)] text-white font-black rounded-lg shadow-lg shadow-[var(--color-accent)]/25 hover:-translate-y-0.5 active:scale-95 transition-all uppercase tracking-widest text-xs';
+
   if (phase === 'presign_error') {
     const hasCountdown = rateLimitCountdown != null && rateLimitCountdown > 0;
     return (
@@ -47,7 +50,7 @@ export function UploadActions({
           <button
             type="button"
             onClick={onClearQueue}
-            className="text-on-surface-variant font-bold text-sm hover:text-on-surface transition-all px-4 py-2"
+            className="text-[var(--color-text-secondary)] font-bold text-sm hover:text-[var(--color-text-primary)] transition-all px-4 py-2"
           >
             {t('button_clear_queue')}
           </button>
@@ -57,7 +60,7 @@ export function UploadActions({
           onClick={onRetryPresign}
           disabled={hasCountdown}
           aria-disabled={hasCountdown}
-          className="px-12 py-4 bg-primary text-white font-black rounded-lg shadow-lg shadow-primary/25 hover:bg-primary-dark hover:-translate-y-0.5 active:scale-95 transition-all uppercase tracking-widest text-xs disabled:opacity-50 disabled:pointer-events-none"
+          className={`${primaryButtonClasses} disabled:opacity-50 disabled:pointer-events-none`}
         >
           {hasCountdown
             ? t('rate_limit_countdown', { seconds: rateLimitCountdown })
@@ -72,7 +75,7 @@ export function UploadActions({
       <button
         type="button"
         onClick={onRetryConfirm}
-        className="px-12 py-4 bg-primary text-white font-black rounded-lg shadow-lg shadow-primary/25 hover:bg-primary-dark hover:-translate-y-0.5 active:scale-95 transition-all uppercase tracking-widest text-xs"
+        className={primaryButtonClasses}
       >
         {t('button_retry')}
       </button>
@@ -86,7 +89,7 @@ export function UploadActions({
           type="button"
           onClick={onClearQueue}
           disabled={isDisabled && phase !== 'idle' && phase !== 'files_selected'}
-          className="text-on-surface-variant font-bold text-sm hover:text-on-surface transition-all px-4 py-2 disabled:opacity-50"
+          className="text-[var(--color-text-secondary)] font-bold text-sm hover:text-[var(--color-text-primary)] transition-all px-4 py-2 disabled:opacity-50"
         >
           {t('button_clear_queue')}
         </button>
@@ -97,7 +100,7 @@ export function UploadActions({
         disabled={isDisabled}
         aria-busy={isLoading}
         aria-disabled={isDisabled}
-        className="px-12 py-4 bg-primary text-white font-black rounded-lg shadow-lg shadow-primary/25 hover:bg-primary-dark hover:-translate-y-0.5 active:scale-95 transition-all uppercase tracking-widest text-xs flex items-center gap-2 disabled:bg-surface-variant disabled:text-on-surface-variant disabled:shadow-none disabled:active:scale-100 disabled:hover:translate-y-0 disabled:cursor-not-allowed"
+        className={`${primaryButtonClasses} flex items-center gap-2 disabled:bg-[var(--color-bg-subtle)] disabled:text-[var(--color-text-secondary)] disabled:shadow-none disabled:active:scale-100 disabled:hover:translate-y-0 disabled:cursor-not-allowed`}
       >
         {isLoading && (
           <span

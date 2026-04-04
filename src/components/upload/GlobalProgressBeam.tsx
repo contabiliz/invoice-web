@@ -28,10 +28,10 @@ export function GlobalProgressBeam({ totalDocs, completedDocs, phase }: GlobalPr
       aria-valuemin={0}
       aria-valuemax={100}
     >
-      <div className="h-1.5 w-full bg-bg-muted">
+      <div className="h-1.5 w-full bg-[var(--color-bg-muted)]">
         <div
           className={[
-            'h-full bg-accent transition-all duration-300 ease-out',
+            'h-full bg-[var(--color-accent)] transition-all duration-300 ease-out',
             isIndeterminate ? 'animate-pulse w-full opacity-60' : '',
           ].join(' ')}
           style={isIndeterminate ? undefined : { width: `${percent}%` }}

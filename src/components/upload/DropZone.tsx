@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { CloudUpload, Info } from 'lucide-react';
 import { FileInput } from './FileInput';
 
 interface DropZoneProps {
@@ -57,15 +58,13 @@ export function DropZone({ onFilesSelected, isDisabled = false, isCompact = fals
           onClick={openPicker}
           onKeyDown={handleKeyDown}
           className={[
-            'bg-white rounded-xl p-10 border-2 border-dashed transition-all group flex flex-col items-center justify-center text-center shadow-sm w-full outline-none',
-            isDragOver ? 'border-primary bg-primary/5' : 'border-outline hover:border-primary hover:bg-primary/5 cursor-pointer',
+            'bg-[var(--color-bg-surface)] rounded-xl p-10 border-2 border-dashed transition-all group flex flex-col items-center justify-center text-center shadow-sm w-full outline-none',
+            isDragOver ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/5' : 'border-[var(--color-border)] hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)]/5 cursor-pointer',
             isDisabled ? 'pointer-events-none opacity-50' : '',
           ].join(' ')}
         >
-          <span className="material-symbols-outlined text-4xl text-on-surface-variant mb-4 group-hover:scale-110 group-hover:text-primary transition-all">
-            cloud_upload
-          </span>
-          <p className="text-on-surface font-bold text-lg">{t('dropzone_compact_title')}</p>
+          <CloudUpload size={40} className="mb-4 text-[var(--color-text-secondary)] group-hover:scale-110 group-hover:text-[var(--color-accent)] transition-all" />
+          <p className="text-[var(--color-text-primary)] font-bold text-lg">{t('dropzone_compact_title')}</p>
           <p className="text-sm text-on-surface-variant mt-1">
             {t('dropzone_compact_subtitle')}
           </p>
@@ -88,28 +87,28 @@ export function DropZone({ onFilesSelected, isDisabled = false, isCompact = fals
         onClick={openPicker}
         onKeyDown={handleKeyDown}
         className={[
-          'bg-white border-2 border-dashed transition-all group relative min-h-[480px] flex flex-col items-center justify-center p-8 text-center rounded outline-none',
-          isDragOver ? 'border-primary bg-primary/5' : 'border-outline-variant hover:border-primary hover:bg-primary/5 cursor-pointer',
+          'bg-[var(--color-bg-surface)] border-2 border-dashed transition-all group relative min-h-[480px] flex flex-col items-center justify-center p-8 text-center rounded outline-none',
+          isDragOver ? 'border-[var(--color-accent)] bg-[var(--color-accent)]/5' : 'border-[var(--color-border-strong)] hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)]/5 cursor-pointer',
           isDisabled ? 'pointer-events-none opacity-50' : '',
         ].join(' ')}
       >
         <div className="relative z-10 w-full flex flex-col items-center">
-          <div className="w-16 h-16 bg-surface-variant rounded flex items-center justify-center mb-6 mx-auto group-hover:scale-110 group-hover:bg-primary transition-all">
-            <span className="material-symbols-outlined text-3xl text-primary group-hover:text-white">cloud_upload</span>
+          <div className="w-16 h-16 bg-[var(--color-bg-subtle)] rounded flex items-center justify-center mb-6 mx-auto group-hover:scale-110 group-hover:bg-[var(--color-accent)] transition-all">
+            <CloudUpload className="text-[var(--color-accent)] group-hover:text-white transition-all" size={32} />
           </div>
-          <h3 className="text-2xl font-bold text-on-surface mb-2">{t('dropzone_title')}</h3>
-          <p className="text-on-surface-variant text-sm mb-10 max-w-sm mx-auto">{t('dropzone_description')}</p>
-          
+          <h3 className="text-2xl font-bold text-[var(--color-text-primary)] mb-2">{t('dropzone_title')}</h3>
+          <p className="text-[var(--color-text-secondary)] text-sm mb-10 max-w-sm mx-auto">{t('dropzone_description')}</p>
+
           <div className="flex flex-wrap justify-center gap-2 mb-8">
             {['XML', 'PDF', 'JPEG', 'PNG', 'WEBP', 'TIFF'].map(ext => (
-              <span key={ext} className="px-2.5 py-1 bg-surface-variant text-on-surface-variant text-[10px] font-bold uppercase tracking-wider rounded-sm">
+              <span key={ext} className="px-2.5 py-1 bg-[var(--color-bg-subtle)] text-[var(--color-text-secondary)] text-[10px] font-bold uppercase tracking-wider rounded-sm">
                 {ext}
               </span>
             ))}
           </div>
-          <div className="flex items-center justify-center gap-2 text-on-surface-variant">
-            <span className="material-symbols-outlined text-base">info</span>
-            <span className="text-[11px] font-technical font-bold uppercase">{t('dropzone_max_size')}</span>
+          <div className="flex items-center justify-center gap-2 text-[var(--color-text-secondary)]">
+            <Info size={18} />
+            <span className="text-[11px] font-bold uppercase">{t('dropzone_max_size')}</span>
           </div>
         </div>
       </div>

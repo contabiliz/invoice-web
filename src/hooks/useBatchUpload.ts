@@ -6,6 +6,7 @@ import {
   uploadFileToStorage,
   confirmBatch,
 } from "@/lib/api/batch-client";
+import type { BatchPresignResponse } from "@/lib/api/types";
 import {
   ACCEPTED_MIME_TYPES,
   MAX_FILE_SIZE_BYTES,
@@ -492,7 +493,7 @@ export function useBatchUpload() {
     async (filesToSend: FileItemState[]) => {
       dispatch({ type: "SET_PHASE", phase: "presigning" });
 
-      let presignResponse: any;
+      let presignResponse: BatchPresignResponse;
       try {
         presignResponse = await presignBatch({
           documents: filesToSend.map((f) => ({
@@ -546,13 +547,10 @@ export function useBatchUpload() {
       // Confirm com apenas os uploads bem-sucedidos
       dispatch({ type: "SET_PHASE", phase: "confirming" });
 
-      const successIds = updatedEntries
-        .filter((_, i) => {
-          // Lê o estado atual via ref (simplificação: coleta durante upload)
-          return true; // será filtrado abaixo via getState
-        })
-        .map((e) => e.documentId)
-        .filter(Boolean) as string[];
+      const successIds = state.fileIds
+        .map((id) => state.files[id])
+        .filter((f) => f.uploadStatus === "done" && f.documentId)
+        .map((f) => f.documentId!);
 
       // Chama confirm
       await runConfirm(presignResponse.batch_id, successIds);
