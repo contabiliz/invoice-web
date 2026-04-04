@@ -154,3 +154,29 @@ export interface AnalyticsDocumentBreakdownList {
   page: number;
   page_size: number;
 }
+
+// ─── GET /api/v1/batches (batch listing) — TODO: backend endpoint pending ───
+// See: D:\Contabiliz\invoice-docs\tech-debt\batch-list-api.md
+export interface BatchListItem {
+  id: string;
+  status: BatchStatus;
+  created_at: string;       // ISO8601
+  completed_at: string | null;
+  document_count: number;
+}
+
+export interface BatchListParams {
+  page?: number;
+  pageSize?: number;
+  status?: BatchStatus | 'all';
+  dateFrom?: string;
+  dateTo?: string;
+  docType?: string;
+}
+
+export interface BatchListResponse {
+  items: BatchListItem[];
+  total: number;
+  page: number;
+  page_size: number;
+}

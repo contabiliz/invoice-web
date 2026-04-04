@@ -274,5 +274,31 @@
       "load_failed": "Unable to load data. Please try again.",
       "export_no_data": "No data available for export."
     }
+  },
+  "batches": {
+    "page_title": "Batch History",
+    "list_title": "Recent Batches",
+    "col_batch_id": "Batch ID",
+    "col_status": "Status",
+    "col_date": "Date",
+    "col_documents": "Documents",
+    "col_actions": "",
+    "view_details": "View details",
+    "empty": "No batches found.",
+    "pagination": "{total} batches",
+    "table_prev": "Previous",
+    "table_next": "Next",
+    "status_completed": "Completed",
+    "status_processing": "Processing",
+    "status_failed": "Failed",
+    "status_partial_failure": "Partial failure",
+    "status_pending_upload": "Awaiting upload",
+    "errors": {
+      "load_failed": "Unable to load batch list. Please try again.",
+      "reprocess_failed": "Unable to reprocess batch."
+    },
+    "reprocess_button": "Reprocess",
+    "reprocessing": "Sending",
+    "reprocess_success": "Batch queued for reprocessing."
   }
 }

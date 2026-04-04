@@ -274,5 +274,31 @@
       "load_failed": "Nao foi possivel carregar os dados. Tente novamente.",
       "export_no_data": "Nenhum dado disponivel para exportacao."
     }
+  },
+  "batches": {
+    "page_title": "Historico de Lotes",
+    "list_title": "Lotes Recent",
+    "col_batch_id": "ID do Lote",
+    "col_status": "Status",
+    "col_date": "Data",
+    "col_documents": "Documentos",
+    "col_actions": "",
+    "view_details": "Ver detalhes",
+    "empty": "Nenhum lote encontrado.",
+    "pagination": "{total} lotes",
+    "table_prev": "Anterior",
+    "table_next": "Proxima",
+    "status_completed": "Concluido",
+    "status_processing": "Processando",
+    "status_failed": "Falhou",
+    "status_partial_failure": "Falha parcial",
+    "status_pending_upload": "Aguardando upload",
+    "errors": {
+      "load_failed": "Nao foi possivel carregar a lista de lotes. Tente novamente.",
+      "reprocess_failed": "Nao foi possivel reprocessar o lote."
+    },
+    "reprocess_button": "Reprocessar",
+    "reprocessing": "Enviando",
+    "reprocess_success": "Lote enviado para reprocessamento."
   }
 }
