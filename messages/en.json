@@ -301,6 +301,7 @@
     },
     "reprocess_button": "Reprocess",
     "reprocessing": "Sending",
-    "reprocess_success": "Batch queued for reprocessing."
+    "reprocess_success": "Batch queued for reprocessing.",
+    "filters": { "from": "From", "to": "To", "apply": "Apply", "reset": "Clear", "refresh": "Refresh" }
   }
 }
