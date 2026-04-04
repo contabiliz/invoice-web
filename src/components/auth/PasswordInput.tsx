@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, forwardRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { Eye, EyeOff } from 'lucide-react';
 
 type PasswordInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
@@ -11,6 +12,7 @@ type PasswordInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
 
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ label, error, rightLabel, id = 'password', ...props }, ref) => {
+    const t = useTranslations('upload');
     const [show, setShow] = useState(false);
     const errorId = `${id}-error`;
 
@@ -35,7 +37,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           <button
             type="button"
             onClick={() => setShow((v) => !v)}
-            aria-label={show ? 'Ocultar senha' : 'Mostrar senha'}
+            aria-label={show ? t('password_hide') : t('password_show')}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-text-disabled hover:text-text-secondary"
           >
             {show ? (

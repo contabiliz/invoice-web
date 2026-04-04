@@ -65,9 +65,9 @@ export function DropZone({ onFilesSelected, isDisabled = false, isCompact = fals
           <span className="material-symbols-outlined text-4xl text-on-surface-variant mb-4 group-hover:scale-110 group-hover:text-primary transition-all">
             cloud_upload
           </span>
-          <p className="text-on-surface font-bold text-lg">Drop more files here</p>
+          <p className="text-on-surface font-bold text-lg">{t('dropzone_compact_title')}</p>
           <p className="text-sm text-on-surface-variant mt-1">
-            or <span className="text-primary font-semibold hover:underline cursor-pointer">browse files</span> from your system
+            {t('dropzone_compact_subtitle')}
           </p>
         </div>
       </div>
@@ -97,8 +97,8 @@ export function DropZone({ onFilesSelected, isDisabled = false, isCompact = fals
           <div className="w-16 h-16 bg-surface-variant rounded flex items-center justify-center mb-6 mx-auto group-hover:scale-110 group-hover:bg-primary transition-all">
             <span className="material-symbols-outlined text-3xl text-primary group-hover:text-white">cloud_upload</span>
           </div>
-          <h3 className="text-2xl font-bold text-on-surface mb-2">Arraste arquivos ou clique para selecionar</h3>
-          <p className="text-on-surface-variant text-sm mb-10 max-w-sm mx-auto">Sincronize seus documentos fiscais diretamente com a infraestrutura Sovereign Ledger.</p>
+          <h3 className="text-2xl font-bold text-on-surface mb-2">{t('dropzone_title')}</h3>
+          <p className="text-on-surface-variant text-sm mb-10 max-w-sm mx-auto">{t('dropzone_description')}</p>
           
           <div className="flex flex-wrap justify-center gap-2 mb-8">
             {['XML', 'PDF', 'JPEG', 'PNG', 'WEBP', 'TIFF'].map(ext => (
@@ -109,7 +109,7 @@ export function DropZone({ onFilesSelected, isDisabled = false, isCompact = fals
           </div>
           <div className="flex items-center justify-center gap-2 text-on-surface-variant">
             <span className="material-symbols-outlined text-base">info</span>
-            <span className="text-[11px] font-technical font-bold uppercase">MAX FILE SIZE: 50.00 MB / PER UPLOAD</span>
+            <span className="text-[11px] font-technical font-bold uppercase">{t('dropzone_max_size')}</span>
           </div>
         </div>
       </div>

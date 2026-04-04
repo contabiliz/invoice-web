@@ -1,11 +1,15 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 interface UploadProgressBarProps {
   value: number;
   fileLabel: string;
 }
 
 export function UploadProgressBar({ value, fileLabel }: UploadProgressBarProps) {
+  const t = useTranslations('upload');
+
   return (
     <div className="w-full">
       <div
@@ -13,7 +17,7 @@ export function UploadProgressBar({ value, fileLabel }: UploadProgressBarProps) 
         aria-valuenow={value}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-label={`Progresso de ${fileLabel}`}
+        aria-label={t('progress_file_label', { filename: fileLabel })}
         className="h-1 w-full rounded-full bg-bg-muted overflow-hidden"
       >
         <div

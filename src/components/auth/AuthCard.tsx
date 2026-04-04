@@ -1,11 +1,15 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+
 type AuthCardProps = {
   subtitle: string;
   children: React.ReactNode;
 };
 
 export function AuthCard({ subtitle, children }: AuthCardProps) {
+  const t = useTranslations('upload');
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-bg-base px-4 py-12">
       {/* Logo */}
@@ -13,7 +17,7 @@ export function AuthCard({ subtitle, children }: AuthCardProps) {
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent">
           <span className="text-base font-bold text-white">C</span>
         </div>
-        <span className="text-lg font-semibold text-text-primary">Contabiliz</span>
+        <span className="text-lg font-semibold text-text-primary">{t('auth_brand')}</span>
         <p className="text-center text-sm text-text-secondary">{subtitle}</p>
       </div>
 
@@ -24,7 +28,7 @@ export function AuthCard({ subtitle, children }: AuthCardProps) {
 
       {/* Footer */}
       <footer className="mt-8 text-center text-xs text-text-disabled">
-        © 2026 Contabiliz. Todos os direitos reservados.
+        {t('auth_footer')}
       </footer>
     </main>
   );

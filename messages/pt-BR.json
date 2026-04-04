@@ -5,6 +5,11 @@
     "dropzone_instruction": "Arraste arquivos aqui ou clique para selecionar",
     "dropzone_accepted_types": "XML NF-e · PDF DANFE · JPEG, PNG, WebP, TIFF",
     "dropzone_limits": "Máx. 50 MB por arquivo · até 500 documentos",
+    "dropzone_title": "Arraste arquivos ou clique para selecionar",
+    "dropzone_description": "Sincronize seus documentos fiscais diretamente com a infraestrutura Sovereign Ledger.",
+    "dropzone_max_size": "Tamanho máximo: 50 MB por upload",
+    "dropzone_compact_title": "Envie mais arquivos aqui",
+    "dropzone_compact_subtitle": "ou explore arquivos do seu sistema",
     "button_submit": "Enviar batch",
     "button_preparing": "Preparando upload…",
     "button_uploading": "Enviando…",
@@ -15,6 +20,7 @@
     "button_reload": "Recarregar página",
     "button_remove_file": "Remover arquivo",
     "button_see_all": "Ver todos os arquivos",
+    "button_clear_queue": "Limpar fila",
     "summary_count": "{validCount} de {totalCount} arquivos · {totalSize}",
     "progress_global_label": "Progresso geral do upload",
     "progress_file_label": "Progresso de {filename}",
@@ -25,6 +31,37 @@
     "success_partial_failed_label": "Documentos que falharam na verificação:",
     "offline_banner": "Sem conexão — uploads pausados. Aguardando reconexão…",
     "rate_limit_countdown": "Aguarde {seconds}s para tentar novamente",
+    "batch_statistics_label": "Estatísticas do batch",
+    "error_count_singular": "arquivo requer atenção",
+    "error_count_plural": "arquivos requerem atenção",
+    "status_idle": "Aguardando",
+    "status_uploading": "Enviando",
+    "status_done": "Enviado",
+    "status_error": "Erro",
+    "status_expired": "Renovando",
+    "status_confirmed": "Confirmado",
+    "status_failed": "Falhou",
+    "upload_failed_inline": "Upload falhou",
+    "file_input_aria_label": "Selecionar arquivos fiscais para upload",
+    "password_hide": "Ocultar senha",
+    "password_show": "Mostrar senha",
+    "auth_brand": "Contabiliz",
+    "auth_footer": "© 2026 Contabiliz. Todos os direitos reservados.",
+    "auth_login_title": "Entrar",
+    "auth_signup_title": "Criar conta",
+    "queue_management": "Gerenciamento de fila",
+    "upload_pending": "Pendente",
+    "upload_active": "Ativo",
+    "documents_staged": "Documentos preparados",
+    "batch_metadata": "Metadados do batch",
+    "target_ledger": "Livro destino",
+    "default_ledger": "Global Accounts Pay",
+    "priority_level": "Nível de prioridade",
+    "priority_standard": "Padrão",
+    "priority_high": "Alta",
+    "crc32_note": "O sistema realizará validação CRC-32 e verificação de hash em todos os documentos válidos ao transmitir.",
+    "security_label": "Segurança: Criptografia E2E",
+    "empty_batch_stats": "0 arquivos — 0 MB",
     "errors": {
       "session_expired": "Sua sessão expirou. Faça login novamente.",
       "invalid_file": "Arquivo inválido: tipo ou tamanho não suportado.",
@@ -91,7 +128,8 @@
   },
   "batch-status": {
     "header": {
-      "created_ago": "Criado {time}"
+      "created_ago": "Criado {time}",
+      "batch_prefix": "Batch"
     },
     "kpi": {
       "total": "Total",
@@ -110,7 +148,8 @@
       "all": "Todos",
       "completed": "Concluídos",
       "processing": "Processando",
-      "failed": "Falhou"
+      "failed": "Falhou",
+      "aria_label": "Filtrar documentos por status"
     },
     "polling": {
       "updating": "Atualizando…"
@@ -129,13 +168,33 @@
       "col_reason": "Razão",
       "col_updated": "Atualizado",
       "empty_tab": "Nenhum documento nesta categoria",
-      "pagination": "Página {current} de {total}"
+      "pagination": "Página {current} de {total}",
+      "pagination_prev": "Página anterior",
+      "pagination_next": "Próxima página"
+    },
+    "header_status": {
+      "processing": "Processando",
+      "completed": "Concluído",
+      "partial_failure": "Parcialmente concluído",
+      "failed": "Falhou",
+      "pending_upload": "Aguardando"
+    },
+    "time": {
+      "less_than_minute": "há menos de 1 minuto",
+      "minutes": "há {count} minuto{plural}",
+      "hours": "há {count} hora{plural}",
+      "days": "há {count} dia(s)"
+    },
+    "progress": {
+      "label": "Progresso",
+      "aria": "{completed} de {total} concluídos"
     },
     "errors": {
       "not_found": "Batch não encontrado ou sem permissão.",
       "polling_network": "Sem conexão — tentando reconectar…",
       "server_error": "Erro no servidor — tentando novamente…",
       "back_to_upload": "Voltar para upload",
+      "technical_reason_aria": "Razão técnica completa",
       "doc": {
         "object_not_found": "Arquivo não encontrado no storage",
         "classifier_timeout": "Tempo de processamento excedido",
@@ -146,6 +205,26 @@
         "schema_validation_failed": "Documento fora do padrão fiscal esperado",
         "unknown": "Falha no processamento — contate o suporte"
       }
+    }
+  },
+  "layout": {
+    "brand": {
+      "name": "Contabiliz",
+      "title": "Núcleo Fiscal",
+      "tagline": "Livro de Precisão"
+    },
+    "nav": {
+      "upload": "Upload",
+      "batches": "Lotes",
+      "history": "Histórico",
+      "settings": "Configurações"
+    },
+    "bottom": {
+      "support": "Suporte",
+      "api_docs": "Docs da API"
+    },
+    "topbar": {
+      "search_placeholder": "Buscar hash ou documento..."
     }
   }
 }

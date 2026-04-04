@@ -51,7 +51,23 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(uploadUrl);
   }
 
+  // Setar locale default se cookie não existe
+  if (!request.cookies.get('locale')) {
+    applyLocaleCookie(supabaseResponse);
+  }
+
   return supabaseResponse;
+}
+
+export function applyLocaleCookie(response: NextResponse): NextResponse {
+  if (!response.cookies.get('locale')) {
+    response.cookies.set('locale', 'pt-BR', {
+      path: '/',
+      maxAge: 31536000,
+      sameSite: 'lax',
+    });
+  }
+  return response;
 }
 
 export const config = {

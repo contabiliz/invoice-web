@@ -76,11 +76,11 @@ export function FileListItem({ item, onRemove, showRemoveButton }: FileListItemP
 
       <div className="flex items-center gap-4">
         {hasError && item.uploadError && (
-          <p className="text-xs text-error font-bold hidden md:block">Upload falhou</p>
+          <p className="text-xs text-error font-bold hidden md:block">{t('upload_failed_inline')}</p>
         )}
-        
+
         {item.uploadStatus === 'done' && (
-          <span className="material-symbols-outlined text-primary" title="Sucesso">check_circle</span>
+          <span className="material-symbols-outlined text-primary" title={t('status_done')}>check_circle</span>
         )}
 
         {showRemoveButton && (

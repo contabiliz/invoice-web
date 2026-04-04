@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { ACCEPTED_MIME_TYPES } from '@/lib/api/types';
 
 interface FileInputProps {
@@ -9,6 +10,7 @@ interface FileInputProps {
 
 export function FileInput({ onFilesSelected }: FileInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const t = useTranslations('upload');
 
   const acceptString = [
     '.xml',
@@ -34,7 +36,7 @@ export function FileInput({ onFilesSelected }: FileInputProps) {
       multiple
       accept={acceptString}
       className="sr-only"
-      aria-label="Selecionar arquivos fiscais para upload"
+      aria-label={t('file_input_aria_label')}
       onChange={handleChange}
     />
   );

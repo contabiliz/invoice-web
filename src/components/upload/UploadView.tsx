@@ -81,14 +81,14 @@ export function UploadView() {
         {/* Header Section */}
         <div className="flex items-end justify-between mb-10">
           <div>
-            <h2 className="text-on-surface-variant font-semibold text-xs uppercase tracking-[0.2em] mb-2">Queue Management</h2>
+            <h2 className="text-on-surface-variant font-semibold text-xs uppercase tracking-[0.2em] mb-2">{t('queue_management')}</h2>
             <h1 className="text-5xl font-black tracking-tight text-on-surface">
-              Upload <span className="text-primary">{phase === 'idle' ? 'Pending' : 'Active'}</span>
+              Upload <span className="text-primary">{phase === 'idle' ? t('upload_pending') : t('upload_active')}</span>
             </h1>
           </div>
           <div className="text-right">
             <div className="text-4xl font-bold text-on-surface leading-none">{fileIds.length.toString().padStart(2, '0')}</div>
-            <div className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold mt-1">Documents Staged</div>
+            <div className="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold mt-1">{t('documents_staged')}</div>
           </div>
         </div>
 
@@ -109,31 +109,32 @@ export function UploadView() {
           {/* Right: Info Panel */}
           <div className="col-span-12 lg:col-span-4">
             <div className="bg-on-surface text-white p-8 rounded-xl sticky top-24 shadow-2xl">
-              <h3 className="text-xl font-black mb-8">Batch Metadata</h3>
+              <h3 className="text-xl font-black mb-8">{t('batch_metadata')}</h3>
               <div className="space-y-8">
                 <div>
-                  <label className="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black block mb-3">Target Ledger</label>
+                  <label className="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black block mb-3">{t('target_ledger')}</label>
                   <div className="bg-white/5 border border-white/10 p-4 rounded-lg flex justify-between items-center cursor-pointer hover:bg-white/10 transition-all">
-                    <span className="text-sm font-semibold">Global Accounts Pay</span>
+                    <span className="text-sm font-semibold">{t('default_ledger')}</span>
                     <span className="material-symbols-outlined text-xl">expand_more</span>
                   </div>
                 </div>
                 <div>
-                  <label className="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black block mb-3">Priority Level</label>
+                  <label className="text-[10px] uppercase tracking-[0.2em] text-on-surface-variant font-black block mb-3">{t('priority_level')}</label>
                   <div className="flex gap-2">
-                    <button className="bg-primary text-white text-[10px] px-5 py-2 rounded-lg font-black uppercase tracking-wider">Standard</button>
-                    <button className="bg-white/5 text-on-surface-variant text-[10px] px-5 py-2 rounded-lg font-black uppercase tracking-wider hover:bg-white/10 hover:text-white transition-all">High</button>
+                    <button className="bg-primary text-white text-[10px] px-5 py-2 rounded-lg font-black uppercase tracking-wider">{t('priority_standard')}</button>
+                    <button className="bg-white/5 text-on-surface-variant text-[10px] px-5 py-2 rounded-lg font-black uppercase tracking-wider hover:bg-white/10 hover:text-white transition-all">{t('priority_high')}</button>
                   </div>
                 </div>
                 <div className="pt-8 border-t border-white/10">
-                  <p className="text-xs text-on-surface-variant mb-5 italic leading-relaxed">System will perform CRC-32 validation and hash check on all valid documents upon transmission.</p>
+                  <p className="text-xs text-on-surface-variant mb-5 italic leading-relaxed">{t('crc32_note')}</p>
                   <div className="flex items-center gap-3 text-primary">
                     <span className="material-symbols-outlined text-lg">verified_user</span>
-                    <span className="text-[10px] font-black uppercase tracking-[0.15em]">Security: E2E Encrypted</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.15em]">{t('security_label')}</span>
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
 
         </div>
@@ -149,10 +150,11 @@ export function UploadView() {
           />
         ) : (
           <div className="flex flex-col opacity-50">
-            <span className="text-[10px] text-on-surface-variant uppercase tracking-widest font-black">Batch Statistics</span>
-            <span className="text-on-surface font-bold text-lg">0 arquivos — 0 MB</span>
+            <span className="text-[10px] text-on-surface-variant uppercase tracking-widest font-black">{t('batch_statistics_label')}</span>
+            <span className="text-on-surface font-bold text-lg">{t('empty_batch_stats')}</span>
           </div>
         )}
+
 
         <UploadActions
           phase={phase}

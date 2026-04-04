@@ -1,0 +1,230 @@
+{
+  "upload": {
+    "page_title": "Fiscal document upload",
+    "page_description": "Upload NF-e XML, DANFE PDF or thermal coupon images",
+    "dropzone_instruction": "Drag files here or click to select",
+    "dropzone_accepted_types": "NF-e XML · DANFE PDF · JPEG, PNG, WebP, TIFF",
+    "dropzone_limits": "Max 50 MB per file · up to 500 documents",
+    "dropzone_title": "Drop files here or click to select",
+    "dropzone_description": "Sync your fiscal documents directly with the Sovereign Ledger infrastructure.",
+    "dropzone_max_size": "Max file size: 50 MB per upload",
+    "dropzone_compact_title": "Drop more files here",
+    "dropzone_compact_subtitle": "or browse files from your system",
+    "button_submit": "Submit batch",
+    "button_preparing": "Preparing upload…",
+    "button_uploading": "Uploading…",
+    "button_confirming": "Verifying documents…",
+    "button_retry": "Try again",
+    "button_view_batch": "View batch",
+    "button_view_now": "View status now",
+    "button_reload": "Reload page",
+    "button_remove_file": "Remove file",
+    "button_see_all": "See all files",
+    "button_clear_queue": "Clear queue",
+    "summary_count": "{validCount} of {totalCount} files · {totalSize}",
+    "progress_global_label": "Upload progress",
+    "progress_file_label": "Progress of {filename}",
+    "counter_sent": "{completed} of {total} sent",
+    "success_full": "{count} documents uploaded successfully.",
+    "success_full_redirect": "Redirecting to batch status…",
+    "success_partial_warning": "{confirmed} documents uploaded, {failed} failed verification.",
+    "success_partial_failed_label": "Documents that failed verification:",
+    "offline_banner": "No connection — uploads paused. Waiting for reconnection…",
+    "rate_limit_countdown": "Wait {seconds}s to try again",
+    "batch_statistics_label": "Batch Statistics",
+    "error_count_singular": "file requires attention",
+    "error_count_plural": "files require attention",
+    "status_idle": "Waiting",
+    "status_uploading": "Uploading",
+    "status_done": "Uploaded",
+    "status_error": "Error",
+    "status_expired": "Renewing",
+    "status_confirmed": "Confirmed",
+    "status_failed": "Failed",
+    "upload_failed_inline": "Upload failed",
+    "file_input_aria_label": "Select fiscal files for upload",
+    "password_hide": "Hide password",
+    "password_show": "Show password",
+    "auth_brand": "Contabiliz",
+    "auth_footer": "© 2026 Contabiliz. All rights reserved.",
+    "auth_login_title": "Log in",
+    "auth_signup_title": "Create account",
+    "queue_management": "Queue Management",
+    "upload_pending": "Pending",
+    "upload_active": "Active",
+    "documents_staged": "Documents Staged",
+    "batch_metadata": "Batch Metadata",
+    "target_ledger": "Target Ledger",
+    "default_ledger": "Global Accounts Pay",
+    "priority_level": "Priority Level",
+    "priority_standard": "Standard",
+    "priority_high": "High",
+    "crc32_note": "System will perform CRC-32 validation and hash check on all valid documents upon transmission.",
+    "security_label": "Security: E2E Encrypted",
+    "empty_batch_stats": "0 files — 0 MB",
+    "errors": {
+      "session_expired": "Your session has expired. Please log in again.",
+      "invalid_file": "Invalid file: unsupported type or size.",
+      "rate_limited": "Too many attempts. Wait 1 minute and try again.",
+      "backpressure": "The system is busy. Try again in a moment.",
+      "server_error": "Internal error. Please try again.",
+      "network": "Unable to connect to the server. Check your internet.",
+      "batch_not_found": "Batch not found. Reload the page and try again.",
+      "batch_conflict": "This batch has already been processed.",
+      "upload_url_expired": "Upload URL expired. Renewing…",
+      "upload_permission_denied": "Permission denied on storage.",
+      "upload_invalid_file": "Invalid file for storage.",
+      "upload_network_timeout": "Connection failure during upload.",
+      "validation_mime": "Unsupported file type.",
+      "validation_size": "File too large (max 50 MB)."
+    }
+  },
+  "auth": {
+    "login": {
+      "subtitle": "Access your account to manage your fiscal documents.",
+      "heading": "Log in to your account",
+      "subheading": "Enter your credentials to continue",
+      "cta": "Log in",
+      "no_account": "Don't have an account?",
+      "signup_link": "Create account"
+    },
+    "signup": {
+      "subtitle": "Smart fiscal management for financial analysis",
+      "heading": "Create new account",
+      "cta": "Create account",
+      "has_account": "Already have an account?",
+      "login_link": "Log in",
+      "lgpd_note": "Data processing in compliance with LGPD"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "password_signup": "Password",
+      "confirm_password": "Confirm password"
+    },
+    "forgot_password": {
+      "label": "Forgot password?",
+      "tooltip": "Coming soon. Contact support."
+    },
+    "toast": {
+      "account_created": "Account created successfully! Log in to continue."
+    },
+    "errors": {
+      "invalid_credentials": "Invalid email or password. Check your credentials and try again.",
+      "email_not_confirmed": "Confirm your email before logging in.",
+      "email_already_registered": "This email is already registered. Try logging in.",
+      "password_too_short": "Password must be at least 8 characters.",
+      "rate_limited": "Too many attempts. Wait a few minutes and try again.",
+      "server_error": "Unable to connect to the server. Please try again.",
+      "unexpected": "An unexpected error occurred. Please try again."
+    },
+    "validation": {
+      "email_invalid": "Invalid email.",
+      "password_required": "Password is required.",
+      "password_too_short": "Password must be at least 8 characters.",
+      "confirm_required": "Please confirm your password.",
+      "passwords_mismatch": "Passwords do not match."
+    }
+  },
+  "batch-status": {
+    "header": {
+      "created_ago": "Created {time}",
+      "batch_prefix": "Batch"
+    },
+    "kpi": {
+      "total": "Total",
+      "completed": "Completed",
+      "processing": "Processing",
+      "failed": "Failed"
+    },
+    "status": {
+      "completed": "Completed",
+      "processing": "Processing",
+      "queued": "Queued",
+      "failed": "Failed",
+      "pending": "Pending"
+    },
+    "tabs": {
+      "all": "All",
+      "completed": "Completed",
+      "processing": "Processing",
+      "failed": "Failed",
+      "aria_label": "Filter documents by status"
+    },
+    "polling": {
+      "updating": "Updating…"
+    },
+    "banner": {
+      "completed": "Batch completed successfully",
+      "partial_failure": "{completed} completed, {failed} failed",
+      "failed": "All documents failed",
+      "action_new_upload": "New upload",
+      "action_view_analytics": "View analytics"
+    },
+    "table": {
+      "col_filename": "File",
+      "col_type": "Type",
+      "col_status": "Status",
+      "col_reason": "Reason",
+      "col_updated": "Updated",
+      "empty_tab": "No documents in this category",
+      "pagination": "Page {current} of {total}",
+      "pagination_prev": "Previous page",
+      "pagination_next": "Next page"
+    },
+    "header_status": {
+      "processing": "Processing",
+      "completed": "Completed",
+      "partial_failure": "Partially completed",
+      "failed": "Failed",
+      "pending_upload": "Waiting"
+    },
+    "time": {
+      "less_than_minute": "less than 1 minute ago",
+      "minutes": "{count} minute{plural} ago",
+      "hours": "{count} hour{plural} ago",
+      "days": "{count} day(s) ago"
+    },
+    "progress": {
+      "label": "Progress",
+      "aria": "{completed} of {total} completed"
+    },
+    "errors": {
+      "not_found": "Batch not found or no permission.",
+      "polling_network": "No connection — retrying…",
+      "server_error": "Server error — retrying…",
+      "back_to_upload": "Back to upload",
+      "technical_reason_aria": "Full technical reason",
+      "doc": {
+        "object_not_found": "File not found in storage",
+        "classifier_timeout": "Processing time exceeded",
+        "invalid_xml": "Invalid or corrupted XML",
+        "unsupported_format": "Unsupported file format",
+        "ocr_failed": "Text recognition (OCR) failed",
+        "duplicate_key": "Document already processed",
+        "schema_validation_failed": "Document does not match expected fiscal pattern",
+        "unknown": "Processing failure — contact support"
+      }
+    }
+  },
+  "layout": {
+    "brand": {
+      "name": "Contabiliz",
+      "title": "Fiscal Core",
+      "tagline": "Precision Ledger"
+    },
+    "nav": {
+      "upload": "Upload",
+      "batches": "Batches",
+      "history": "History",
+      "settings": "Settings"
+    },
+    "bottom": {
+      "support": "Support",
+      "api_docs": "API Docs"
+    },
+    "topbar": {
+      "search_placeholder": "Search hash or document..."
+    }
+  }
+}

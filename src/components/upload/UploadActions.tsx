@@ -28,16 +28,16 @@ export function UploadActions({
   const isDisabled = isLoading || validFileCount === 0;
 
   const buttonLabel = {
-    idle: 'Enviar batch',
-    files_selected: 'Enviar batch',
-    presigning: 'Preparando...',
-    uploading: 'Enviando...',
-    confirming: 'Confirmando...',
-    success_full: 'Concluído',
-    success_partial: 'Concluído',
-    presign_error: 'Tentar novamente',
-    confirm_error: 'Tentar novamente',
-  }[phase] ?? 'Enviar batch';
+    idle: t('button_submit'),
+    files_selected: t('button_submit'),
+    presigning: t('button_preparing'),
+    uploading: t('button_uploading'),
+    confirming: t('button_confirming'),
+    success_full: t('button_submit'),
+    success_partial: t('button_submit'),
+    presign_error: t('button_retry'),
+    confirm_error: t('button_retry'),
+  }[phase] ?? t('button_submit');
 
   if (phase === 'presign_error') {
     const hasCountdown = rateLimitCountdown != null && rateLimitCountdown > 0;
@@ -49,7 +49,7 @@ export function UploadActions({
             onClick={onClearQueue}
             className="text-on-surface-variant font-bold text-sm hover:text-on-surface transition-all px-4 py-2"
           >
-            Clear Queue
+            {t('button_clear_queue')}
           </button>
         )}
         <button
@@ -61,7 +61,7 @@ export function UploadActions({
         >
           {hasCountdown
             ? t('rate_limit_countdown', { seconds: rateLimitCountdown })
-            : 'Tentar novamente'}
+            : t('button_retry')}
         </button>
       </div>
     );
@@ -74,7 +74,7 @@ export function UploadActions({
         onClick={onRetryConfirm}
         className="px-12 py-4 bg-primary text-white font-black rounded-lg shadow-lg shadow-primary/25 hover:bg-primary-dark hover:-translate-y-0.5 active:scale-95 transition-all uppercase tracking-widest text-xs"
       >
-        Tentar novamente
+        {t('button_retry')}
       </button>
     );
   }
@@ -88,7 +88,7 @@ export function UploadActions({
           disabled={isDisabled && phase !== 'idle' && phase !== 'files_selected'}
           className="text-on-surface-variant font-bold text-sm hover:text-on-surface transition-all px-4 py-2 disabled:opacity-50"
         >
-          Clear Queue
+          {t('button_clear_queue')}
         </button>
       )}
       <button

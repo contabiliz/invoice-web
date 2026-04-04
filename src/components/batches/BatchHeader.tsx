@@ -20,23 +20,23 @@ const STATUS_DOT_COLOR: Partial<Record<BatchStatus, string>> = {
   pending_upload:  'bg-[var(--color-status-neutral)]',
 };
 
-const STATUS_LABEL: Partial<Record<BatchStatus, string>> = {
-  processing:      'Processando',
-  completed:       'Concluído',
-  partial_failure: 'Parcialmente concluído',
-  failed:          'Falhou',
-  pending_upload:  'Aguardando',
+const LABEL_KEY_MAP: Partial<Record<BatchStatus, string>> = {
+  processing:      'header_status.processing',
+  completed:       'header_status.completed',
+  partial_failure: 'header_status.partial_failure',
+  failed:          'header_status.failed',
+  pending_upload:  'header_status.pending_upload',
 };
 
-function formatRelativeTime(isoDate: string): string {
+function getRelativeTime(isoDate: string, t: (key: string, params?: Record<string, unknown>) => string): string {
   const diff = Date.now() - new Date(isoDate).getTime();
   const minutes = Math.floor(diff / 60_000);
   const hours = Math.floor(diff / 3_600_000);
 
-  if (minutes < 1) return 'há menos de 1 minuto';
-  if (minutes < 60) return `há ${minutes} minuto${minutes > 1 ? 's' : ''}`;
-  if (hours < 24) return `há ${hours} hora${hours > 1 ? 's' : ''}`;
-  return `há ${Math.floor(hours / 24)} dia(s)`;
+  if (minutes < 1) return t('time.less_than_minute');
+  if (minutes < 60) return t('time.minutes', { count: minutes, plural: minutes > 1 ? 's' : '' });
+  if (hours < 24) return t('time.hours', { count: hours, plural: hours > 1 ? 's' : '' });
+  return t('time.days', { count: Math.floor(hours / 24) });
 }
 
 export function BatchHeader({ batchId, status, createdAt, phase, isLoading }: BatchHeaderProps) {
@@ -66,20 +66,20 @@ export function BatchHeader({ batchId, status, createdAt, phase, isLoading }: Ba
 
       {/* Batch ID abreviado */}
       <h1 className="font-mono-tabular text-sm font-semibold text-[var(--color-text-primary)]">
-        Batch #{abbreviatedId}
+        {t('header.batch_prefix')}{abbreviatedId}
       </h1>
 
       {/* Status label */}
       {status && (
         <span className="text-sm text-[var(--color-text-secondary)]">
-          — {STATUS_LABEL[status] ?? status}
+          — {t(LABEL_KEY_MAP[status] ?? 'status.failed')}
         </span>
       )}
 
       {/* Tempo relativo */}
       {createdAt && (
         <span className="text-xs text-[var(--color-text-secondary)] ml-auto">
-          {t('header.created_ago', { time: formatRelativeTime(createdAt) })}
+          {t('header.created_ago', { time: getRelativeTime(createdAt, t) })}
         </span>
       )}
     </div>
