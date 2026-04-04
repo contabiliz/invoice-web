@@ -1,7 +1,7 @@
-# PRD-01 — Autenticação
+# PRD-01 — Autenticação (Login & Cadastro)
 
 > **Status:** `draft`
-> **Versão:** 0.1
+> **Versão:** 0.2
 > **Autor:** —
 > **Última atualização:** 2026-04-03
 > **Depende de:** —
@@ -12,187 +12,176 @@
 
 ### 01.1.1 Objetivo
 
-Permitir que usuários acessem o Contabiliz com segurança usando email e senha. A tela de autenticação é a porta de entrada do produto — deve ser simples, rápida e transmitir confiança profissional sem criar atrito desnecessário.
+Permitir que o usuário acesse ou crie uma conta na plataforma Contabiliz via email e senha, estabelecendo uma sessão autenticada (JWT em cookies httpOnly) que habilita acesso a todas as rotas protegidas.
 
 ### 01.1.2 Jornada do usuário
 
-O usuário acessa qualquer rota protegida e é redirecionado para `/login`. Na tela, ele vê o logotipo do Contabiliz no topo, dois campos (email e senha) com labels visíveis, e um botão "Entrar" de largura total. Ao submeter, o sistema valida as credenciais via Supabase Auth. Se bem-sucedido, o usuário é redirecionado para `/upload`. Se houver erro de credencial, uma mensagem clara aparece abaixo do formulário sem recarregar a página. O usuário nunca vê mensagens técnicas de erro do Supabase.
+**Login:** O usuário acessa `/login` e vê um formulário centralizado com campos de email e senha. Insere suas credenciais e clica em "Entrar". Enquanto a requisição está em andamento, o botão fica desabilitado com indicador de carregamento. Em caso de sucesso, é redirecionado imediatamente para `/upload`. Se as credenciais estiverem incorretas, um banner de erro vermelho aparece inline abaixo do botão com mensagem amigável em PT-BR. O usuário pode corrigir os dados e tentar novamente sem recarregar a página. Se não tiver conta, clica em "Criar conta" e é direcionado para `/cadastro`.
 
-Para novos usuários, um link "Criar conta" abre o formulário de cadastro na mesma tela (troca de formulário via estado local, sem navegação). O cadastro exige apenas email e senha — sem dados pessoais adicionais no v1. Após cadastro bem-sucedido, o usuário já entra autenticado e é redirecionado para `/upload`.
+**Cadastro:** O usuário acessa `/cadastro` e vê um formulário com campos de email, senha e confirmação de senha. Insere os dados e clica em "Criar conta". Em caso de sucesso, é redirecionado para `/login` com um toast de confirmação. Se o email já estiver em uso, um banner de erro aparece inline. Se as senhas não coincidirem, o erro é exibido imediatamente na validação do formulário. Se já tiver conta, clica em "Fazer login" e é direcionado para `/login`.
 
 ### 01.1.3 Fora do escopo
 
 - Login social (Google, GitHub) — v2
-- Recuperação de senha por email — v2 (link "Esqueci minha senha" visível mas desabilitado com tooltip "Em breve")
+- Recuperação de senha por email ("Esqueceu a senha?") — link visível na UI mas inativo/desabilitado em v1
 - Magic link (passwordless) — v2
-- MFA — v2
-- Gerenciamento de perfil e dados pessoais
+- MFA / 2FA — v2
+- Gerenciamento de perfil e dados pessoais — v2
+- Verificação de email pós-cadastro — Supabase pode exigir isso dependendo da configuração; v1 assume auto-confirm habilitado no dashboard Supabase
+- Onboarding / tour guiado após primeiro cadastro — v2
 
 ---
 
 ## 01.2 Architecture Decision Records
 
-### ADR-001 — Supabase Auth como único provider
+### ADR-001 — Supabase Auth SDK diretamente, sem intermediação da invoice-api
 
-**Decisão:** O frontend usa exclusivamente o Supabase JS SDK (`@supabase/ssr`) para autenticação. Nenhuma chamada direta à `invoice-api` para login.
+**Decisão:** Login e cadastro chamam o Supabase Auth SDK (`supabase.auth.signInWithPassword`, `supabase.auth.signUp`) diretamente do cliente. A `invoice-api` não expõe endpoints de autenticação.
 
-**Contexto:** A `invoice-api` valida JWTs do Supabase mas não emite tokens. A autenticação acontece diretamente entre o browser e o Supabase Auth endpoint.
+**Contexto:** A `invoice-api` é um BFF para operações de negócio (batches, documentos). A gestão de identidade é responsabilidade do Supabase Auth.
 
 **Razões:**
-- O Supabase Auth gerencia refresh, expiração e rotação de tokens automaticamente
-- Elimina um hop de rede desnecessário (browser → API → Supabase)
-- O SDK `@supabase/ssr` gerencia cookies de forma segura (httpOnly)
+- Supabase Auth já gerencia tokens, refresh e sessões via `@supabase/ssr`
+- Adicionar um proxy de auth na API seria redundância sem benefício
+- `auth.uid()` nas RLS policies requer que o token seja emitido pelo Supabase — não por um proxy customizado
 
-**Consequências:** O cliente Supabase no browser precisa das variáveis `NEXT_PUBLIC_SUPABASE_URL` e `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Essas são chaves **públicas** — seguras para o frontend.
+**Consequências:** O cliente nunca envia senha à `invoice-api`. O JWT resultante é armazenado em cookies httpOnly via `@supabase/ssr` e injetado automaticamente em chamadas subsequentes.
 
 ---
 
-### ADR-002 — JWT em cookies httpOnly, nunca localStorage
+### ADR-002 — JWT em cookies httpOnly via `@supabase/ssr`, nunca em `localStorage`
 
-**Decisão:** A sessão Supabase é persistida em cookies gerenciados pelo `@supabase/ssr`. O frontend nunca lê ou escreve o JWT em `localStorage` ou `sessionStorage`.
+**Decisão:** O token de sessão é gerenciado exclusivamente pelo `@supabase/ssr` em cookies httpOnly. O frontend não armazena nem acessa o JWT diretamente.
 
 **Razões:**
-- `localStorage` é acessível por qualquer script na página — vetor de XSS
-- Cookies httpOnly não são acessíveis via JavaScript
-- O middleware Next.js pode ler cookies server-side e renovar a sessão antes do request chegar à rota
+- `localStorage` é acessível por JavaScript — vetor de XSS
+- Cookies httpOnly são inacessíveis a scripts — protegem contra XSS mesmo que código de terceiro seja injetado
+- O `@supabase/ssr` gerencia refresh automático sem intervenção do desenvolvedor
 
-**Consequências:** O middleware `src/middleware.ts` é responsável por renovar a sessão em cada request. Esse bloco nunca deve ser removido.
+**Consequências:** Server Components e middleware podem validar a sessão via `createClient()` (server) sem round-trip ao Supabase. O middleware redireciona para `/login` em toda rota protegida sem sessão válida.
 
 ---
 
-### ADR-003 — Troca de formulário (login/signup) via estado local, sem rota separada
+### ADR-003 — Duas rotas separadas: `/login` e `/cadastro`
 
-**Decisão:** Login e cadastro vivem na mesma rota `/login`. A troca entre os dois formulários é controlada por estado local (`useState`), sem navegação de rota.
+**Decisão:** Login e cadastro são rotas independentes (`/login` e `/cadastro`), não um toggle de estado em uma única rota.
 
 **Razões:**
-- Evita URL diferente para signup (`/signup`) que poderia vazar em analytics se o usuário compartilhar
-- Transição mais suave — sem loading de rota
-- Simplicidade: um único componente de shell
+- Os designs mostram layouts, headings e mensagens de subtítulo distintos para cada modo
+- URLs claras facilitam deep linking, redirecionamento pós-ação e rastreamento analytics
+- Evita lógica condicional complexa num único componente para fluxos distintos
 
-**Consequências:** A URL permanece `/login` tanto no login quanto no signup. O estado `mode: 'login' | 'signup'` controla qual formulário é renderizado.
+**Consequências:** `middleware.ts` precisa tratar `/cadastro` como rota pública (sem redirect para login). Redirecionamento pós-cadastro vai para `/login?registered=true` para exibir toast de confirmação.
 
 ---
 
-### ADR-004 — Criação automática de perfil no primeiro login
+### ADR-004 — Criação automática do perfil em `public.users` via trigger Supabase
 
-**Decisão:** O Supabase cria automaticamente uma row em `public.users` via trigger de banco de dados no primeiro login. O frontend não precisa fazer uma chamada separada para criar o perfil.
+**Decisão:** A row em `public.users` é criada por um trigger `on auth.users insert` no banco — não pelo frontend.
 
-**Contexto:** A tabela `public.users` é o perfil de aplicação que estende `auth.users`. Sem essa row, as RLS policies falham.
+**Contexto:** `is_admin()` retorna NULL (não false) se a row não existir, causando comportamento inesperado nas RLS policies (ver `06.1-authentication.md §06.1.8`).
 
 **Razões:**
-- O trigger é mais confiável que uma chamada de frontend (pode falhar em rede)
-- O frontend não precisa saber do detalhe de implementação do banco
+- O trigger é atômico com a inserção em `auth.users` — impossível ter user sem perfil
+- O frontend não precisa fazer chamada adicional pós-cadastro
+- Elimina race condition entre criação de conta e primeiro uso da API
 
-**Consequências:** O frontend assume que o perfil existe após autenticação bem-sucedida. Se por algum motivo não existir, o middleware receberá erros de RLS nas queries subsequentes — tratar como erro de sessão e redirecionar para login.
+**Consequências:** O frontend não chama nenhum endpoint após `signUp()`. O trigger cuida da consistência do banco.
+
+---
+
+### ADR-005 — "Esqueceu a senha?" presente na UI mas desabilitado em v1
+
+**Decisão:** O link "Esqueceu a senha?" é exibido no formulário de login (conforme o design) mas está inativo em v1. Ao clicar, exibe tooltip/mensagem: "Em breve. Entre em contato com o suporte."
+
+**Razões:**
+- O design inclui o link — removê-lo quebraria a fidelidade visual
+- Implementar recuperação de email requer configuração de SMTP e template de email — fora do escopo v1
+- Exibir o elemento com estado desabilitado é melhor UX do que sumir com o elemento
+
+**Consequências:** O link tem `cursor-not-allowed`, não redireciona, e exibe um tooltip informativo.
 
 ---
 
 ## 01.3 Contrato com o BFF
 
-Esta tela **não consome a `invoice-api`**. A autenticação é diretamente com o Supabase Auth via SDK.
+### 01.3.1 Endpoints consumidos
 
-### 01.3.1 Chamadas SDK
+Esta tela **não consome endpoints da `invoice-api`**. Toda autenticação é via Supabase Auth SDK.
 
-```ts
-import { createClient } from "@/lib/supabase/client";
+| SDK Call | Quando é chamado | Retorno esperado |
+|---|---|---|
+| `supabase.auth.signInWithPassword({ email, password })` | Submit do formulário de login | `{ data: { session }, error }` |
+| `supabase.auth.signUp({ email, password })` | Submit do formulário de cadastro | `{ data: { user }, error }` |
 
-const supabase = createClient();
+### 01.3.2 Mapeamento de erros do Supabase Auth
 
-// Login
-const { data, error } = await supabase.auth.signInWithPassword({
-  email,
-  password,
-});
+O campo `error.message` do Supabase **nunca é exibido ao usuário**. Mapear via código de erro:
 
-// Signup
-const { data, error } = await supabase.auth.signUp({
-  email,
-  password,
-});
+| `error.message` (Supabase interno) | Mensagem exibida ao usuário (PT-BR) | Onde exibir |
+|---|---|---|
+| `Invalid login credentials` | "Email ou senha incorretos. Verifique os dados e tente novamente." | Banner inline abaixo do botão |
+| `Email not confirmed` | "Confirme seu email antes de entrar." | Banner inline |
+| `User already registered` | "Este email já está cadastrado. Tente fazer login." | Banner inline |
+| `Password should be at least 6 characters` | "A senha deve ter pelo menos 8 caracteres." | Erro inline no campo Senha |
+| Erro de rede / timeout | "Não foi possível conectar. Verifique sua internet e tente novamente." | Banner inline |
+| Qualquer outro erro | "Ocorreu um erro inesperado. Tente novamente." | Banner inline |
 
-// Logout
-await supabase.auth.signOut();
-```
+### 01.3.3 Fluxo de autenticação
 
-### 01.3.2 Códigos de erro do Supabase e mensagens de usuário
-
-| Código Supabase | Mensagem para o usuário |
-|---|---|
-| `invalid_credentials` | "Email ou senha incorretos." |
-| `email_not_confirmed` | "Confirme seu email antes de entrar." |
-| `over_email_send_rate_limit` | "Muitas tentativas. Aguarde alguns minutos." |
-| `user_already_exists` | "Este email já está cadastrado. Faça login." |
-| `weak_password` | "Senha muito fraca. Use ao menos 8 caracteres." |
-| Qualquer outro erro | "Algo deu errado. Tente novamente." |
-
-### 01.3.3 Fluxo de autenticação pós-login
-
-```
-1. supabase.auth.signInWithPassword() → { session }
-2. @supabase/ssr escreve cookies automaticamente
-3. Next.js middleware renova session em requests seguintes
-4. router.push('/upload') no cliente
-5. Middleware verifica sessão e permite acesso
-```
+O JWT não é manipulado pelo componente. O `@supabase/ssr` armazena o token em cookies httpOnly após `signInWithPassword()`. O `middleware.ts` lê o cookie em cada request e redireciona para `/login` se ausente ou expirado.
 
 ---
 
 ## 01.4 Estados de UI
 
-### 01.4.1 Mapa de estados
+### 01.4.1 Mapa de estados — Login
 
 ```
-[idle — formulário de login vazio]
-    │
-    ├─ usuário preenche e clica "Entrar" ───→ [submitting]
-    ├─ clica "Criar conta" ─────────────────→ [idle_signup]
-    │
-[submitting — aguardando Supabase Auth]
-    │
-    ├─ erro de credencial ──────────────────→ [error_inline]
-    ├─ erro de rede ────────────────────────→ [error_inline]
-    ├─ sucesso ─────────────────────────────→ redirect /upload
-    │
-[error_inline — formulário com erro]
-    │
-    ├─ usuário corrige e tenta de novo ─────→ [submitting]
-    │
-[idle_signup — formulário de cadastro]
-    │
-    ├─ usuário preenche e clica "Criar conta" → [submitting_signup]
-    ├─ clica "Já tenho conta" ──────────────→ [idle]
-    │
-[submitting_signup]
-    │
-    ├─ sucesso ─────────────────────────────→ redirect /upload
-    ├─ erro ────────────────────────────────→ [error_inline_signup]
+idle
+ │
+ ├─ submit (credenciais preenchidas) ──→ loading
+ │
+loading
+ │
+ ├─ success ──────────────────────────→ [redirect /upload]
+ └─ error ────────────────────────────→ error
+      │
+      └─ usuário edita campos ─────────→ idle
 ```
 
-### 01.4.2 Definição de cada estado
+### 01.4.2 Mapa de estados — Cadastro
 
-#### `idle` (login)
-| Atributo | Descrição |
-|---|---|
-| **O que é exibido** | Logo, campo email, campo senha, botão "Entrar" (full width), link "Criar conta" |
-| **Ações disponíveis** | Preencher campos, submeter, ir para signup |
-| **Transições** | → `submitting` ao submeter; → `idle_signup` ao clicar "Criar conta" |
+```
+idle
+ │
+ ├─ submit (campos válidos) ──────────→ loading
+ │
+loading
+ │
+ ├─ success ──────────────────────────→ [redirect /login?registered=true]
+ └─ error ────────────────────────────→ error
+      │
+      └─ usuário edita campos ─────────→ idle
+```
 
-#### `submitting`
-| Atributo | Descrição |
-|---|---|
-| **O que é exibido** | Campos desabilitados, botão com spinner + "Entrando…" |
-| **Ações disponíveis** | Nenhuma |
-| **Transições** | → redirect `/upload` em sucesso; → `error_inline` em falha |
+### 01.4.3 Definição de estados
 
-#### `error_inline`
-| Atributo | Descrição |
-|---|---|
-| **O que é exibido** | Banner de erro abaixo do formulário (`role="alert"`). Campos habilitados novamente. |
-| **Ações disponíveis** | Corrigir campos, submeter novamente |
-| **Transições** | → `submitting` ao tentar novamente |
+#### Login
 
-#### `idle_signup` e `submitting_signup`
-Espelham os estados de login mas com campo de confirmação de senha e texto "Criar conta".
+| Estado | Gatilho | O que é exibido | Ações disponíveis | Transições |
+|---|---|---|---|---|
+| `idle` | Acesso inicial à rota `/login` | Formulário completo, botão "Entrar" ativo | Preencher campos, submeter, navegar para cadastro | → `loading` |
+| `loading` | Submit do formulário com campos válidos | Botão "Entrar" desabilitado com spinner, campos read-only | — | → `idle` (erro), redirect (sucesso) |
+| `error` | Resposta de erro do Supabase Auth | Banner vermelho inline com mensagem PT-BR, campos editáveis | Editar campos, submeter novamente | → `loading` |
+
+#### Cadastro
+
+| Estado | Gatilho | O que é exibido | Ações disponíveis | Transições |
+|---|---|---|---|---|
+| `idle` | Acesso inicial à rota `/cadastro` | Formulário completo, botão "Criar conta" ativo | Preencher campos, submeter, navegar para login | → `loading` |
+| `loading` | Submit com campos válidos | Botão desabilitado com spinner, campos read-only | — | → `idle` (erro), redirect (sucesso) |
+| `error` | Resposta de erro do Supabase Auth | Banner vermelho inline com mensagem PT-BR | Editar campos, submeter novamente | → `loading` |
 
 ---
 
@@ -201,154 +190,236 @@ Espelham os estados de login mas com campo de confirmação de senha e texto "Cr
 ### 01.5.1 Árvore de componentes
 
 ```
-LoginPage (SC — route: /login)
-└── AuthShell (CC — layout centralizado, troca login/signup)
-    ├── BrandLogo (SC — estático)
-    ├── LoginForm (CC — react-hook-form + zod)
-    │   ├── EmailField (CC)
-    │   ├── PasswordField (CC — toggle visibilidade)
-    │   ├── AuthError (CC — role="alert")
-    │   └── SubmitButton (CC — loading state)
-    └── SignupForm (CC — mesmo padrão do LoginForm)
+/login
+└── LoginPage (SC)               ← src/app/login/page.tsx
+    └── LoginForm (CC)           ← src/components/auth/LoginForm.tsx
+
+/cadastro
+└── SignupPage (SC)              ← src/app/cadastro/page.tsx
+    └── SignupForm (CC)          ← src/components/auth/SignupForm.tsx
 ```
 
-### 01.5.2 Hook principal
+Ambas as páginas não estão dentro do grupo `(auth)` — são rotas públicas.
+
+### 01.5.2 Responsabilidades por componente
+
+| Componente | Tipo | Responsabilidade | Props principais |
+|---|---|---|---|
+| `LoginPage` | SC | Wrapper estático, sem lógica | — |
+| `LoginForm` | CC | Estado do formulário, chamada Supabase Auth, mapeamento de erros, redirect | — |
+| `SignupPage` | SC | Wrapper estático, sem lógica | — |
+| `SignupForm` | CC | Estado do formulário, validação de confirmação de senha, chamada Supabase Auth, mapeamento de erros | — |
+
+### 01.5.3 Validação de formulários
+
+Usar **React Hook Form + Zod**. Schemas:
 
 ```ts
-function useAuth(): {
-  mode: "login" | "signup";
-  setMode: (mode: "login" | "signup") => void;
-  isSubmitting: boolean;
-  error: string | null;
-  login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string) => Promise<void>;
-}
-```
-
-### 01.5.3 Schema de validação (Zod)
-
-```ts
+// Login
 const loginSchema = z.object({
   email: z.string().email("Email inválido"),
   password: z.string().min(1, "Senha obrigatória"),
 });
 
+// Cadastro
 const signupSchema = z.object({
   email: z.string().email("Email inválido"),
-  password: z.string().min(8, "Mínimo 8 caracteres"),
+  password: z.string().min(8, "A senha deve ter pelo menos 8 caracteres"),
   confirmPassword: z.string(),
-}).refine((d) => d.password === d.confirmPassword, {
-  message: "Senhas não conferem",
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "As senhas não coincidem",
   path: ["confirmPassword"],
 });
 ```
+
+Erros de validação do Zod são exibidos inline abaixo de cada campo (não como banner).
+
+### 01.5.4 Hooks customizados
+
+Não são necessários hooks customizados. A lógica de auth cabe dentro dos componentes `LoginForm` e `SignupForm` com `react-hook-form` + chamada direta ao Supabase SDK.
 
 ---
 
 ## 01.6 Gestão de estado
 
+### 01.6.1 Estado local vs servidor
+
 | Dado | Onde vive | Justificativa |
 |---|---|---|
-| Sessão do usuário | `@supabase/ssr` (cookies) | Gerenciado pelo SDK |
-| `mode` (login/signup) | `useState` local | Transitório, sem persistência |
-| Erros de auth | `useState` local | Específico da sessão de login |
-| Campos do formulário | `react-hook-form` | Padrão do projeto |
+| Campos do formulário | `react-hook-form` | Estado transitório do formulário |
+| Estado de loading | `useState` local | Derivado da chamada async ao SDK |
+| Mensagem de erro inline | `useState` local | Gerado pelo mapeamento de erro pós-submit |
+| JWT / sessão | `@supabase/ssr` (cookies) | Gerenciado pelo SDK — nunca acessar diretamente |
+
+### 01.6.2 Redirecionamento pós-login
+
+Usar `router.push('/upload')` via `useRouter` do Next.js após `session` retornar com sucesso. Não usar `window.location` — quebra o prefetch do App Router.
 
 ---
 
-## 01.7 Tratamento de erros
+## 01.7 Wireframes (Stitch)
 
-| Cenário | Comportamento |
-|---|---|
-| Credencial inválida | Banner inline: "Email ou senha incorretos." |
-| Email não confirmado | Banner inline: "Confirme seu email antes de entrar." |
-| Rate limit Supabase | Banner inline: "Muitas tentativas. Aguarde alguns minutos." |
-| Erro de rede | Banner inline: "Sem conexão. Verifique a internet." |
-| Erro desconhecido | Banner inline: "Algo deu errado. Tente novamente." |
+Stitch Project ID: `5660826328406993994`
 
-**Regra:** nunca exibir `error.message` do Supabase diretamente. Mapear via código.
-
----
-
-## 01.8 Segurança e privacidade
-
-- [ ] JWT nunca em `localStorage` — gerenciado por `@supabase/ssr`
-- [ ] Campos de senha com `type="password"` por padrão
-- [ ] Toggle de visibilidade da senha usa `type="text"` — sem solução de terceiros
-- [ ] `autocomplete="current-password"` no campo de senha para gerenciadores de senha
-- [ ] `autocomplete="email"` no campo de email
-- [ ] Sem logs de email ou senha no console
-
----
-
-## 01.9 Requisitos de acessibilidade
-
-- [ ] Labels visíveis em todos os campos (não apenas placeholder)
-- [ ] `htmlFor` conectando label e input
-- [ ] Mensagem de erro com `role="alert"`
-- [ ] Botão de submit com `aria-busy="true"` durante submissão
-- [ ] Foco movido para a mensagem de erro após falha
-- [ ] Tecla Enter submete o formulário
-- [ ] Contraste mínimo 4.5:1
-
----
-
-## 01.10 Guia para prototipação no Paper
-
-### 01.10.1 Frames a criar
-
-| Frame | Estado | Prioridade |
+| Tela | Screen ID | Estado correspondente |
 |---|---|---|
-| `Auth — login idle` | `idle` | Alta |
-| `Auth — login submitting` | `submitting` | Alta |
-| `Auth — login error` | `error_inline` | Alta |
-| `Auth — signup idle` | `idle_signup` | Alta |
-| `Auth — signup error` | `error_inline_signup` | Média |
+| Login — Idle | `a1c4627e326548ffbc11dec69937cfa0` | `idle` |
+| Login — Error State | `0b5fc40b2c6c4e9eb3dc972eff19d69f` | `error` |
+| Signup — Idle | `e56866af285540f7bf33e93a3bfe05bf` | `idle` |
 
-### 01.10.2 Elementos críticos a validar
+### 01.7.1 Elementos visuais — Login Idle
 
-- [ ] Logo com proporção correta — sem distorção
-- [ ] Card centralizado (max-width 400px) com padding generoso
-- [ ] Botão "Entrar" de largura total
-- [ ] Erro inline abaixo do formulário (não toast flutuante)
-- [ ] Transição suave entre login e signup (sem salto de layout)
-- [ ] Link "Esqueci minha senha" visível mas desabilitado com tooltip "Em breve"
+- Logo Contabiliz (ícone + texto) centralizado no topo
+- Subtítulo: "Acesse sua conta para gerenciar seus documentos fiscais."
+- Card centralizado com:
+  - Label "Email" + input (`placeholder="nome@empresa.com.br"`)
+  - Label "Senha" + input com toggle de visibilidade + link "Esqueceu a senha?" (desabilitado, direita)
+  - Botão primário full-width: "Entrar"
+- Link abaixo do card: "Não possui uma conta? **Criar conta**" → `/cadastro`
+- Footer: "Suporte Técnico · Segurança" e "© 2026 Contabiliz. Todos os direitos reservados."
+
+### 01.7.2 Elementos visuais — Login Error State
+
+- Logo Contabiliz (texto, cor primária) centralizado no topo
+- Subtítulo: "Precisão em dados fiscais e contábeis"
+- Card com heading "Acesse sua conta" + sub "Insira suas credenciais para continuar"
+- Campos preenchidos (email + senha)
+- **Banner de erro vermelho** abaixo do botão: ícone de erro + "Email ou senha incorretos. Verifique os dados e tente novamente."
+- Link abaixo do card: "Não tem uma conta? **Cadastre-se**"
+
+### 01.7.3 Elementos visuais — Signup Idle
+
+- Ícone quadrado "C" + título "Contabiliz" centralizado
+- Subtítulo: "Gestão fiscal inteligente para análises financeiras"
+- Card com heading "Criar nova conta":
+  - Label "EMAIL" + input com ícone `@` + `placeholder="nome@empresa.com.br"`
+  - Label "SENHA" + input com ícone `🔒` + toggle de visibilidade
+  - Label "CONFIRMAR SENHA" + input com ícone `🔒`
+  - Botão primário full-width: "Criar conta"
+  - Link: "Já tenho conta? **Fazer login**" → `/login`
+  - Nota LGPD: "🛡 Processamento de dados em conformidade com a LGPD"
+- Footer: "Contabiliz · Suporte · Termos de Uso · Privacidade · © 2026 Contabiliz."
 
 ---
 
-## 01.11 Critérios de aceitação
+## 01.8 Tratamento de erros
 
-### Funcionais
+### 01.8.1 Erros esperados
+
+| Situação | Comportamento |
+|---|---|
+| Credenciais incorretas (login) | Banner vermelho inline com mensagem PT-BR mapeada |
+| Email já cadastrado (cadastro) | Banner vermelho inline: "Este email já está cadastrado." |
+| Senhas não coincidem (cadastro) | Erro Zod inline no campo "Confirmar Senha" — antes do submit |
+| Senha curta demais | Erro Zod inline no campo "Senha" |
+| Email inválido | Erro Zod inline no campo "Email" |
+| Erro de rede | Banner vermelho inline: "Não foi possível conectar." |
+
+### 01.8.2 Erros de rede
+
+| Situação | Comportamento |
+|---|---|
+| Timeout / sem internet | Banner inline com mensagem de conexão e botão de retry |
+| Supabase Auth indisponível | Mesma mensagem de erro genérico; não expor detalhes técnicos |
+
+---
+
+## 01.9 Segurança e privacidade
+
+- [ ] JWT gerenciado exclusivamente pelo `@supabase/ssr` em cookies httpOnly — nunca em `localStorage`
+- [ ] `error.message` do Supabase nunca exibido ao usuário — sempre usar mapeamento PT-BR
+- [ ] Nenhuma credencial (email, senha, token) logada no console do browser
+- [ ] "Esqueceu a senha?" desabilitado em v1 — não conecta a nenhum fluxo de email
+- [ ] Rota `/cadastro` marcada como pública no `middleware.ts` (sem redirect para login)
+- [ ] Trigger de banco cria `public.users` automaticamente — frontend não constrói o perfil
+- [ ] Password input com `type="password"` — toggle via controle UI, nunca expondo o valor
+
+---
+
+## 01.10 Requisitos de acessibilidade
+
+- [ ] Labels associadas a inputs via `htmlFor` / `id`
+- [ ] Botão "Entrar" / "Criar conta" tem `aria-busy="true"` durante loading
+- [ ] Banner de erro tem `role="alert"` para anúncio automático por leitores de tela
+- [ ] Erros inline de validação têm `aria-describedby` apontando para o input correspondente
+- [ ] Toggle de visibilidade de senha tem `aria-label` descritivo ("Mostrar senha" / "Ocultar senha")
+- [ ] Foco gerenciado: após erro no submit, foco vai para o banner de erro ou primeiro campo com erro
+
+---
+
+## 01.11 Métricas e observabilidade
+
+### 01.11.1 Eventos a instrumentar
+
+| Evento | Quando disparar | Dados |
+|---|---|---|
+| `auth_login_attempted` | Submit do formulário de login | — (sem email) |
+| `auth_login_success` | Redirect pós-login bem-sucedido | — |
+| `auth_login_error` | Erro mapeado exibido ao usuário | `error_type` (ex: `invalid_credentials`) |
+| `auth_signup_attempted` | Submit do formulário de cadastro | — |
+| `auth_signup_success` | Redirect pós-cadastro bem-sucedido | — |
+| `auth_signup_error` | Erro mapeado exibido ao usuário | `error_type` |
+
+> Nunca incluir email, senha ou token nos eventos de analytics.
+
+### 01.11.2 Web Vitals alvo
+
+| Métrica | Alvo |
+|---|---|
+| LCP | < 1.5s (página estática, sem dados do servidor) |
+| CLS | < 0.05 (layout estável, sem conteúdo dinâmico acima do fold) |
+| INP | < 200ms |
+
+---
+
+## 01.12 Critérios de aceitação
+
+### 01.12.1 Funcionais
+
 - [ ] **T-FUNC-01** — Login com credenciais válidas redireciona para `/upload`
-- [ ] **T-FUNC-02** — Login com credenciais inválidas exibe mensagem amigável (não erro raw do Supabase)
-- [ ] **T-FUNC-03** — Signup com email já existente exibe "Este email já está cadastrado. Faça login."
-- [ ] **T-FUNC-04** — Signup bem-sucedido redireciona para `/upload` já autenticado
-- [ ] **T-FUNC-05** — Botão "Entrar" fica desabilitado durante submissão (sem duplo envio)
-- [ ] **T-FUNC-06** — Acesso direto a `/upload` sem sessão redireciona para `/login`
-- [ ] **T-FUNC-07** — Acesso a `/login` com sessão ativa redireciona para `/upload`
+- [ ] **T-FUNC-02** — Login com credenciais inválidas exibe banner PT-BR sem recarregar a página
+- [ ] **T-FUNC-03** — Cadastro com email novo cria conta e redireciona para `/login`
+- [ ] **T-FUNC-04** — Cadastro com email já existente exibe banner PT-BR de erro
+- [ ] **T-FUNC-05** — Senhas que não coincidem exibem erro Zod inline antes do submit
+- [ ] **T-FUNC-06** — Link "Criar conta" no login navega para `/cadastro`
+- [ ] **T-FUNC-07** — Link "Fazer login" no cadastro navega para `/login`
+- [ ] **T-FUNC-08** — Acesso a `/upload` sem sessão redireciona para `/login`
+- [ ] **T-FUNC-09** — Acesso a `/login` com sessão válida redireciona para `/upload`
+- [ ] **T-FUNC-10** — "Esqueceu a senha?" não navega nem dispara ação — exibe tooltip informativo
 
-### Segurança
-- [ ] **T-SEC-01** — JWT não aparece em `localStorage`, `sessionStorage` ou cookies sem httpOnly
-- [ ] **T-SEC-02** — Nenhum erro do Supabase aparece raw no UI (sem `AuthApiError`, stack traces, etc.)
+### 01.12.2 De segurança
 
-### Performance
-- [ ] **T-PERF-01** — LCP da tela de login < 1.5s em Fast 3G
+- [ ] **T-SEC-01** — JWT não aparece em `localStorage`, `sessionStorage` ou em qualquer `console.log`
+- [ ] **T-SEC-02** — Mensagem de erro do Supabase (`error.message` raw) nunca aparece na UI
+- [ ] **T-SEC-03** — Acesso direto a qualquer rota `(auth)/*` sem cookie de sessão resulta em redirect para `/login`
+- [ ] **T-SEC-04** — Input de senha tem `type="password"` por padrão (toggle para `type="text"` apenas explicitamente)
+
+### 01.12.3 De performance
+
+- [ ] **T-PERF-01** — Primeira renderização de `/login` em < 1.5s em conexão 4G simulada
+- [ ] **T-PERF-02** — Loading state aparece em < 100ms após submit (feedback imediato ao usuário)
 
 ---
 
-## 01.12 O que não fazer
+## 01.13 O que não fazer
 
-**Não armazenar JWT em `localStorage`.**
-O `@supabase/ssr` gerencia a sessão em cookies httpOnly. Qualquer leitura manual do token via `localStorage` é insegura.
+**Não armazenar o JWT em `localStorage`.**
+O `@supabase/ssr` gerencia o token em cookies httpOnly. Qualquer tentativa de replicar o token em `localStorage` para "facilitar" acesso é um vetor de XSS.
 
-**Não exibir mensagens de erro do Supabase diretamente.**
-`error.message` do Supabase retorna strings em inglês e às vezes com detalhes técnicos. Mapear sempre para PT-BR amigável.
+**Não exibir `error.message` do Supabase ao usuário.**
+As mensagens do Supabase Auth são técnicas em inglês (ex: `"Invalid login credentials"`). Sempre mapear para mensagens PT-BR via tabela de mapeamento.
 
-**Não criar rota `/signup` separada.**
-Manter tudo em `/login` com troca de formulário via estado. Menos surface de roteamento, menos confusão.
+**Não chamar a `invoice-api` para autenticar.**
+A API não expõe endpoints de auth. Login e cadastro são operações exclusivas do Supabase Auth SDK.
 
-**Não implementar recuperação de senha no v1.**
-O link fica visível com tooltip "Em breve" para não frustrar usuários que tentam clicar, mas sem funcionalidade real.
+**Não construir o perfil em `public.users` no frontend.**
+O trigger de banco garante a criação atômica. Uma chamada de API no frontend após cadastro cria race condition e duplicidade.
+
+**Não usar `window.location.href` para redirect pós-login.**
+Usar `router.push('/upload')` do Next.js App Router para manter o prefetch e o estado do React.
+
+**Não implementar recuperação de senha em v1.**
+O link "Esqueceu a senha?" é decorativo em v1. Implementar fluxo de email reset requer SMTP, templates e tratamento de tokens — fora do escopo.
 
 ---
 
@@ -356,4 +427,5 @@ O link fica visível com tooltip "Em breve" para não frustrar usuários que ten
 
 | Versão | Data | Autor | Mudança |
 |---|---|---|---|
-| 0.1 | 2026-04-03 | — | Rascunho inicial |
+| 0.1 | 2026-04-03 | — | Rascunho inicial (sem wireframes) |
+| 0.2 | 2026-04-03 | — | Wireframes Stitch integrados, duas rotas separadas, ADR-003/004/005 adicionados |
