@@ -42,6 +42,53 @@
       "validation_size": "Arquivo muito grande (máx 50 MB)."
     }
   },
+  "auth": {
+    "login": {
+      "subtitle": "Acesse sua conta para gerenciar seus documentos fiscais.",
+      "heading": "Acesse sua conta",
+      "subheading": "Insira suas credenciais para continuar",
+      "cta": "Entrar",
+      "no_account": "Não possui uma conta?",
+      "signup_link": "Criar conta"
+    },
+    "signup": {
+      "subtitle": "Gestão fiscal inteligente para análises financeiras",
+      "heading": "Criar nova conta",
+      "cta": "Criar conta",
+      "has_account": "Já tenho conta?",
+      "login_link": "Fazer login",
+      "lgpd_note": "Processamento de dados em conformidade com a LGPD"
+    },
+    "fields": {
+      "email": "Email",
+      "password": "Senha",
+      "password_signup": "Senha",
+      "confirm_password": "Confirmar senha"
+    },
+    "forgot_password": {
+      "label": "Esqueceu a senha?",
+      "tooltip": "Em breve. Entre em contato com o suporte."
+    },
+    "toast": {
+      "account_created": "Conta criada com sucesso! Faça login para continuar."
+    },
+    "errors": {
+      "invalid_credentials": "Email ou senha incorretos. Verifique os dados e tente novamente.",
+      "email_not_confirmed": "Confirme seu email antes de entrar.",
+      "email_already_registered": "Este email já está cadastrado. Tente fazer login.",
+      "password_too_short": "A senha deve ter pelo menos 8 caracteres.",
+      "rate_limited": "Muitas tentativas. Aguarde alguns minutos e tente novamente.",
+      "server_error": "Não foi possível conectar ao servidor. Tente novamente.",
+      "unexpected": "Ocorreu um erro inesperado. Tente novamente."
+    },
+    "validation": {
+      "email_invalid": "Email inválido.",
+      "password_required": "Senha obrigatória.",
+      "password_too_short": "A senha deve ter pelo menos 8 caracteres.",
+      "confirm_required": "Confirme sua senha.",
+      "passwords_mismatch": "As senhas não coincidem."
+    }
+  },
   "batch-status": {
     "header": {
       "created_ago": "Criado {time}"

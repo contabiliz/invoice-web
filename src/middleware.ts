@@ -1,6 +1,9 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
+const PROTECTED_PREFIXES = ['/upload', '/batches', '/analytics'];
+const AUTH_ROUTES = ['/login', '/cadastro'];
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
@@ -13,9 +16,7 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet: { name: string; value: string; options?: CookieOptions }[]) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value),
-          );
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
           supabaseResponse = NextResponse.next({ request });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options),
@@ -25,21 +26,29 @@ export async function middleware(request: NextRequest) {
     },
   );
 
-  // Renova sessão — não usar getSession() no middleware (inseguro)
+  // Usar getUser() — nunca getSession() no middleware (valida token no servidor)
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Redireciona para /login se não autenticado em rotas protegidas
-  const isProtectedRoute =
-    request.nextUrl.pathname.startsWith('/upload') ||
-    request.nextUrl.pathname.startsWith('/batches') ||
-    request.nextUrl.pathname.startsWith('/analytics');
+  const pathname = request.nextUrl.pathname;
 
-  if (!user && isProtectedRoute) {
-    const url = request.nextUrl.clone();
-    url.pathname = '/login';
-    return NextResponse.redirect(url);
+  // Rota protegida sem sessão → redirect para /login com callbackUrl
+  const isProtected = PROTECTED_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+  if (!user && isProtected) {
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = '/login';
+    loginUrl.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Rota de auth com sessão ativa → redirect para /upload
+  const isAuthRoute = AUTH_ROUTES.includes(pathname);
+  if (user && isAuthRoute) {
+    const uploadUrl = request.nextUrl.clone();
+    uploadUrl.pathname = '/upload';
+    uploadUrl.search = '';
+    return NextResponse.redirect(uploadUrl);
   }
 
   return supabaseResponse;
