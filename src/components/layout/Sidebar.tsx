@@ -27,7 +27,7 @@ export async function Sidebar() {
           <span className="text-sm">{t('nav.analytics')}</span>
         </a>
         <a
-          href="#"
+          href="/batches"
           className="text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded-lg flex items-center gap-3 px-4 py-3 transition-all"
         >
           <span className="material-symbols-outlined">history</span>
