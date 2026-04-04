@@ -15,7 +15,7 @@ import {
 } from 'recharts';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { TimeSeriesPreset } from '@/lib/api/analytics-client';
-import type { AnalyticsTimeSeriesPoint } from '@/lib/api/types';
+import type { AnalyticsTimeSeriesResponse, AnalyticsTimeSeriesPoint } from '@/lib/api/types';
 
 const PRESETS: { key: TimeSeriesPreset; label: string }[] = [
   { key: '7d', label: '7 dias' },
@@ -47,8 +47,11 @@ export function TimeSeriesChart({
   const chartData =
     isLoading || !data
       ? []
-      : data.points.map((p) => ({
-          ...p,
+      : data.map((p) => ({
+          date: p.date,
+          total: p.total,
+          success: p.success,
+          failure: p.failure,
           dateLabel: formatDateLabel(p.date),
         }));
 
@@ -102,10 +105,7 @@ export function TimeSeriesChart({
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="dateLabel" />
                 <YAxis fontSize={12} fontFamily="'Geist Mono', monospace" />
-                <Tooltip
-                  labelFormatter={(label) => `Data: ${label}`}
-                  formatter={(value: number, name: string) => [value, name]}
-                />
+                <Tooltip />
                 <Legend />
                 <Line
                   type="monotone"
@@ -137,10 +137,7 @@ export function TimeSeriesChart({
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="dateLabel" />
                 <YAxis fontSize={12} fontFamily="'Geist Mono', monospace" />
-                <Tooltip
-                  labelFormatter={(label) => `Data: ${label}`}
-                  formatter={(value: number, name: string) => [value, name]}
-                />
+                <Tooltip />
                 <Legend />
                 <Bar dataKey="total" fill="#3b82f6" name="Total" />
                 <Bar dataKey="success" fill="#22c55e" name="Sucesso" />

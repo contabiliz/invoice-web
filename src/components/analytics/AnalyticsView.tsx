@@ -44,7 +44,7 @@ export function AnalyticsView() {
       <KPICards data={kpiData} isLoading={kpisQuery.isLoading} />
 
       <TimeSeriesChart
-        data={timeSeriesQuery.data ?? null}
+        data={timeSeriesQuery.data?.points ?? null}
         isLoading={timeSeriesQuery.isLoading}
         preset={preset}
         onPresetChange={setPreset}
