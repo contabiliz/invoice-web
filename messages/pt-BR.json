@@ -259,6 +259,7 @@
     "table_pagination": "{total} documentos",
     "table_prev": "Anterior",
     "table_next": "Proxima",
+    "status_all": "Todos",
     "status_completed": "Concluido",
     "status_failed": "Falhou",
     "status_processing": "Processando",
@@ -288,6 +289,7 @@
     "pagination": "{total} lotes",
     "table_prev": "Anterior",
     "table_next": "Proxima",
+    "status_all": "Todos",
     "status_completed": "Concluido",
     "status_processing": "Processando",
     "status_failed": "Falhou",
@@ -297,6 +299,7 @@
       "load_failed": "Nao foi possivel carregar a lista de lotes. Tente novamente.",
       "reprocess_failed": "Nao foi possivel reprocessar o lote."
     },
+    "filters": { "from": "De", "to": "Até", "apply": "Aplicar", "reset": "Limpar", "refresh": "Atualizar" },
     "reprocess_button": "Reprocessar",
     "reprocessing": "Enviando",
     "reprocess_success": "Lote enviado para reprocessamento."

@@ -13,6 +13,8 @@ export interface BatchListProps {
     total: number;
     onPageChange: (page: number) => void;
   } | null;
+  onReprocess?: (batchId: string) => void;
+  isReprocessing?: boolean;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -38,6 +40,8 @@ export function BatchList({
   data,
   isLoading,
   pagination,
+  onReprocess,
+  isReprocessing,
 }: BatchListProps) {
   const t = useTranslations('batches');
   const totalPages = pagination
@@ -119,13 +123,26 @@ export function BatchList({
                   <td className="px-5 py-3 font-mono tabular-nums text-on-surface">
                     {batch.document_count}
                   </td>
-                  <td className="px-5 py-3 text-right">
+                  <td className="px-5 py-3 text-right flex items-center justify-end gap-2">
+                    {(batch.status === 'failed' || batch.status === 'partial_failure') && onReprocess && (
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          onReprocess(batch.id);
+                        }}
+                        disabled={isReprocessing}
+                        className="px-2 py-0.5 text-xs rounded border border-outline text-on-surface-variant hover:text-on-surface hover:bg-surface-variant/50 disabled:opacity-40 disabled:cursor-not-allowed"
+                        title={t('reprocess_button')}
+                      >
+                        {t('reprocess_button')}
+                      </button>
+                    )}
                     <a
                       href={`/batches/${batch.id}`}
                       className="text-sm text-on-surface-variant hover:text-on-surface"
                       title={t('view_details')}
                     >
-                      {'↗'}
+                      ↗
                     </a>
                   </td>
                 </tr>
