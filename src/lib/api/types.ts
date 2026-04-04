@@ -114,3 +114,43 @@ export class BatchApiError extends Error {
     this.name = 'BatchApiError';
   }
 }
+
+// ─── GET /api/v1/analytics/kpis ────────────────────────────────────────────
+export interface AnalyticsKPIResponse {
+  total_documents: number;
+  success_count: number;
+  failure_count: number;
+  success_rate: number;  // percentage, e.g. 95.2
+}
+
+// ─── GET /api/v1/analytics/timeseries ──────────────────────────────────────
+export interface AnalyticsTimeSeriesPoint {
+  date: string;    // YYYY-MM-DD
+  total: number;
+  success: number;
+  failure: number;
+}
+
+export interface AnalyticsTimeSeriesResponse {
+  points: AnalyticsTimeSeriesPoint[];
+  date_range: string;   // e.g. "Últimos 7 dias"
+  presets: Record<string, string>;  // {"7d": "7 dias", ...}
+}
+
+// ─── GET /api/v1/analytics/documents ────────────────────────────────────────
+export interface AnalyticsDocumentBreakdown {
+  document_id: string;       // UUID
+  batch_id: string;          // UUID
+  type: string;              // xml, pdf, img
+  status: string;            // document status
+  processing_time_ms: number;
+  extraction_result: string;  // success, failed, partial, skipped
+  created_at: string;        // ISO 8601
+}
+
+export interface AnalyticsDocumentBreakdownList {
+  items: AnalyticsDocumentBreakdown[];
+  total: number;
+  page: number;
+  page_size: number;
+}
