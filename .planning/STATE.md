@@ -8,13 +8,15 @@
 |-------|-------|
 | Milestone | v1.0 |
 | Phase | 1 of 2 |
-| STATUS | Ready to plan |
+| STATUS | Plans created, ready to execute |
 | Blockers | None |
 
 ## Active Phase
 
 - **Current Phase:** Phase 1 — Analytics Dashboard
-- **Plans:** 0 created, 0 executed
+- **Plans:** 2 created, 0 executed
+  - **01:** Analytics API endpoints + types + client
+  - **02:** Analytics Dashboard UI (KPIs, chart, table, export)
 - **Decisions:** 0
 
 ## Milestone Progress
@@ -23,7 +25,7 @@ Progress: ░░░░░░░░░░ 0%
 
 | Phase | Status | Plans | Progress |
 |-------|--------|-------|----------|
-| 1     | ○      | 0/0   | 0%       |
+| 1     | ◆      | 2/0   | 0%       |
 | 2     | ○      | 0/0   | 0%       |
 
 ## Decisions Made
