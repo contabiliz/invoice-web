@@ -14,40 +14,28 @@ The upload → processing pipeline must never drop data: every document uploaded
 
 (shipped and confirming value — to be verified after use)
 
-- ✓ Auth (login/signup with Supabase) — existing
-- ✓ Batch upload (drag-and-drop → presign → upload → confirm) — existing
-- ✓ Real-time batch processing status — existing
+- ✓ Auth (login/signup with Supabase) — v1.0
+- ✓ Batch upload (drag-and-drop → presign → upload → confirm) — v1.0
+- ✓ Real-time batch processing status — v1.0
+- ✓ Analytics dashboard with KPIs, charts, table, export — v1.0 (mock data)
+- ✓ Batch history listing with filters and reprocessing — v1.0 (mock data)
 
 ### Active
 
-- [ ] **ANAL-01**: Analytics dashboard with high-level KPIs (total documents, success rate, failures)
-- [ ] **ANAL-02**: Time-series charts showing processing volume over time (default month-to-date, with 7/30/90 day presets)
-- [ ] **ANAL-03**: Per-document breakdown table (granular detail: type, status, processing time, extraction result)
-- [ ] **ANAL-04**: Export capability for processing data (CSV/PDF summary — standard for accountant workflows)
-- [ ] **HIST-01**: Batch history listing page — all past batches with status, date, document count
-- [ ] **HIST-02**: Batch history filtering (by status, date range, document type)
-- [ ] **HIST-03**: Re-process failed batches from history
-
-### Out of Scope
-
-- Profile management / user data editing — deferred to v2, not needed for core invoice workflow
-- Social auth (Google, GitHub) — deferred to v2, email/password sufficient now
-- Password recovery via email — link visible in UI but inactive in v1
-- MFA / 2FA — deferred to v2
-- Real-time notifications (push/email) — not part of current scope
-- Batch history notifications — no email/webhook on batch completion
+(None — v1.0 complete. Run `/gsd-new-milestone` for next planning cycle)
 
 ## Context
 
-This is a brownfield project with significant existing code. The system spans 6 repos (frontend + 4 backend services + shared types). The frontend already implements auth (PRD-01), batch upload (PRD-02), and batch processing status (PRD-03). The analytics route (`/analytics`) exists in the auth layout but has no implementation.
+**v1.0 shipped 2026-04-04.** Frontend complete for auth, upload, batch monitoring, analytics dashboard (mock), and batch history (mock). System spans 6 repos (frontend + 4 backend services + shared types).
 
-**Known technical concerns to address during this milestone:**
+**Outstanding technical debt:**
 1. Manual API types alongside generated types — risk of drift
 2. Dual auth validation (middleware + layout) — redundant, adds latency
 3. shadcn/ui components setup may be incomplete
 4. Presigned URL expiry handling — fragile retry logic (only 1 retry)
 5. Locale detection in middleware bypasses next-intl
-6. Analytics API may not exist yet on backend — need to verify
+6. Analytics API backend endpoints — mock frontend, backend pending (see `invoice-docs/tech-debt/`)
+7. Batch list API backend endpoints — mock frontend, backend pending
 
 ## Key Decisions
 
@@ -57,6 +45,8 @@ This is a brownfield project with significant existing code. The system spans 6 
 | Month-to-date default with 7/30/90 day presets | Default matches billing/reporting cycles; presets cover common accountant needs | ✓ Set |
 | Analytics includes both chart overview and detailed table | Accountants need to see the forest AND inspect individual documents | ✓ Set |
 | Batch history is a v1 requirement | Deferred in PRD-03 but needed for "complete the frontend" goal — users need to find past work | ✓ Set |
+| Mock data on frontend, defer backend analytics API to tech debt | Frontend UI/UX validation needed first — backend endpoints can be added incrementally | ✓ Set |
+| Mock data for batch list API — same pattern | Consistency with analytics pattern — swap to real API when backend is ready | ✓ Set |
 
 ## Evolution
 
@@ -76,5 +66,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-
-*Last updated: 2026-04-04 after v1.0 roadmap creation and Phase 1 planning*
+*Last updated: 2026-04-04 after v1.0 milestone*
