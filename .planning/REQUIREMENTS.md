@@ -7,10 +7,10 @@
 
 ### Analytics
 
-- [ ] **ANAL-01**: Dashboard displays high-level KPIs (total documents processed, success rate, failure count) for the authenticated user
-- [ ] **ANAL-02**: Time-series chart shows processing volume over time with default month-to-date range and 7/30/90 day preset buttons
-- [ ] **ANAL-03**: Per-document breakdown table shows granular details: document type, processing status, processing time, extraction result
-- [ ] **ANAL-04**: User can export processing data as CSV or PDF summary
+- [x] **ANAL-01**: Dashboard displays high-level KPIs (total documents processed, success rate, failure count) for the authenticated user
+- [x] **ANAL-02**: Time-series chart shows processing volume over time with default month-to-date range and 7/30/90 day preset buttons
+- [x] **ANAL-03**: Per-document breakdown table shows granular details: document type, processing status, processing time, extraction result
+- [x] **ANAL-04**: User can export processing data as CSV or PDF summary
 
 ### Batch History
 
@@ -47,10 +47,10 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ANAL-01 | Phase 1 | Pending |
-| ANAL-02 | Phase 1 | Pending |
-| ANAL-03 | Phase 1 | Pending |
-| ANAL-04 | Phase 1 | Pending |
+| ANAL-01 | Phase 1 | Complete |
+| ANAL-02 | Phase 1 | Complete |
+| ANAL-03 | Phase 1 | Complete |
+| ANAL-04 | Phase 1 | Complete |
 | HIST-01 | Phase 2 | Pending |
 | HIST-02 | Phase 2 | Pending |
 | HIST-03 | Phase 2 | Pending |
