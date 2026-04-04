@@ -38,19 +38,19 @@ const DOC_TYPE_MAP: Record<string, string> = {
 };
 
 const STATUS_COLOR_MAP: Record<string, string> = {
-  completed: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
-  failed: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-  processing: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-  queued: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+  completed: 'bg-status-success-bg text-status-success',
+  failed: 'bg-status-error-bg text-status-error',
+  processing: 'bg-status-warning-bg text-status-warning',
+  queued: 'bg-status-neutral-bg text-status-neutral',
 };
 
 const EXTRACTION_COLOR_MAP: Record<string, string> = {
-  success: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
-  failed: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-  partial: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+  success: 'bg-status-success-bg text-status-success',
+  failed: 'bg-status-error-bg text-status-error',
+  partial: 'bg-status-warning-bg text-status-warning',
 };
 
-const DEFAULT_BADGE = 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400';
+const DEFAULT_BADGE = 'bg-status-neutral-bg text-status-neutral';
 
 export function DocumentTable({
   data,

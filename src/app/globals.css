@@ -31,33 +31,31 @@
 }
 
 /* ─── Dark Mode ─── */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg-base: #0a0a0a;
-    --color-bg-surface: #171717;
-    --color-bg-subtle: #1c1c1e;
-    --color-bg-muted: #27272a;
+.dark {
+  --color-bg-base: #0a0a0a;
+  --color-bg-surface: #171717;
+  --color-bg-subtle: #1c1c1e;
+  --color-bg-muted: #27272a;
 
-    --color-border: #3f3f46;
-    --color-border-strong: #52525b;
+  --color-border: #3f3f46;
+  --color-border-strong: #52525b;
 
-    --color-text-primary: #fafafa;
-    --color-text-secondary: #a1a1aa;
-    --color-text-disabled: #52525b;
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-text-disabled: #52525b;
 
-    --color-accent: #3b82f6;
-    --color-accent-hover: #60a5fa;
-    --color-accent-subtle: #0c1a2e;
+  --color-accent: #3b82f6;
+  --color-accent-hover: #60a5fa;
+  --color-accent-subtle: #0c1a2e;
 
-    --color-status-success: #4ade80;
-    --color-status-success-bg: #052e16;
-    --color-status-warning: #fcd34d;
-    --color-status-warning-bg: #1c1400;
-    --color-status-error: #f87171;
-    --color-status-error-bg: #2d0a0a;
-    --color-status-neutral: #a1a1aa;
-    --color-status-neutral-bg: #1c1c1e;
-  }
+  --color-status-success: #4ade80;
+  --color-status-success-bg: #052e16;
+  --color-status-warning: #fcd34d;
+  --color-status-warning-bg: #1c1400;
+  --color-status-error: #f87171;
+  --color-status-error-bg: #2d0a0a;
+  --color-status-neutral: #a1a1aa;
+  --color-status-neutral-bg: #1c1c1e;
 }
 
 /* ─── Base ─── */
@@ -96,4 +94,8 @@ body {
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+}
+
+.dark .glass-panel {
+  background: rgba(23, 23, 23, 0.9);
 }

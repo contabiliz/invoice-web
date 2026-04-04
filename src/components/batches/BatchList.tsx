@@ -18,11 +18,11 @@ export interface BatchListProps {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  completed: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
-  processing: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
-  failed: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-  partial_failure: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400',
-  pending_upload: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+  completed: 'bg-status-success-bg text-status-success',
+  processing: 'bg-status-warning-bg text-status-warning',
+  failed: 'bg-status-error-bg text-status-error',
+  partial_failure: 'bg-status-warning-bg text-status-warning',
+  pending_upload: 'bg-status-neutral-bg text-status-neutral',
 };
 
 function formatDate(iso: string): string {
@@ -112,7 +112,7 @@ export function BatchList({
                   </td>
                   <td className="px-5 py-3">
                     <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium font-mono tabular-nums ${STATUS_COLORS[batch.status] ?? 'bg-gray-100 text-gray-800'}`}
+                      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium font-mono tabular-nums ${STATUS_COLORS[batch.status] ?? 'bg-status-neutral-bg text-status-neutral'}`}
                     >
                       {t(`status_${batch.status}`, { defaultValue: batch.status })}
                     </span>

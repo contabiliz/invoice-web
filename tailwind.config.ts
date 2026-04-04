@@ -40,28 +40,28 @@ const config: Config = {
           neutral: 'var(--color-status-neutral)',
           'neutral-bg': 'var(--color-status-neutral-bg)',
         },
-        // Sovereign Ledger Design Tokens
+        // Legacy semantic aliases — now CSS-variable-backed (theme-aware)
         primary: {
-          DEFAULT: '#0070F3',
-          dark: '#005ecf',
+          DEFAULT: 'var(--color-accent)',
+          dark: 'var(--color-accent-hover)',
         },
         'on-primary': '#ffffff',
-        background: '#F8FAFC',
+        background: 'var(--color-bg-base)',
         surface: {
-          DEFAULT: '#ffffff',
-          variant: '#F1F5F9',
+          DEFAULT: 'var(--color-bg-surface)',
+          variant: 'var(--color-bg-subtle)',
         },
         outline: {
-          DEFAULT: '#E2E8F0',
-          variant: '#d1d5db',
+          DEFAULT: 'var(--color-border)',
+          variant: 'var(--color-border-strong)',
         },
         'on-surface': {
-          DEFAULT: '#0F172A',
-          variant: '#64748B',
+          DEFAULT: 'var(--color-text-primary)',
+          variant: 'var(--color-text-secondary)',
         },
         error: {
-          DEFAULT: '#EF4444',
-          container: '#FEE2E2',
+          DEFAULT: 'var(--color-status-error)',
+          container: 'var(--color-status-error-bg)',
         },
       },
       fontFamily: {

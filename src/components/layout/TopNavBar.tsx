@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { ThemeToggle } from './ThemeToggle';
 
 type TopNavBarProps = {
   children: React.ReactNode;
@@ -8,7 +9,7 @@ export async function TopNavBar({ children }: TopNavBarProps) {
   const t = await getTranslations('layout');
 
   return (
-    <nav className="fixed top-0 w-full z-50 bg-white border-b border-outline flex justify-between items-center px-8 py-3 shadow-sm">
+    <nav className="fixed top-0 w-full z-50 bg-surface border-b border-outline flex justify-between items-center px-8 py-3 shadow-sm">
       <div className="flex items-center gap-8">
         <span className="text-xl font-extrabold tracking-tight text-primary">
           {t('brand.name')}
@@ -32,6 +33,7 @@ export async function TopNavBar({ children }: TopNavBarProps) {
           <button className="p-2 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all">
             <span className="material-symbols-outlined">settings</span>
           </button>
+          <ThemeToggle />
         </div>
         <div className="flex items-center gap-3 px-3 border-l border-outline">
           {children}
