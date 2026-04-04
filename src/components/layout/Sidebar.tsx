@@ -14,17 +14,17 @@ export async function Sidebar() {
       <nav className="flex-1 space-y-1">
         <a
           href="/upload"
-          className="bg-primary/10 text-primary font-bold rounded-lg flex items-center gap-3 px-4 py-3 transition-all"
+          className="text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded-lg flex items-center gap-3 px-4 py-3 transition-all"
         >
           <span className="material-symbols-outlined">upload_file</span>
           <span className="text-sm">{t('nav.upload')}</span>
         </a>
         <a
-          href="#"
+          href="/analytics"
           className="text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded-lg flex items-center gap-3 px-4 py-3 transition-all"
         >
-          <span className="material-symbols-outlined">folder_zip</span>
-          <span className="text-sm">{t('nav.batches')}</span>
+          <span className="material-symbols-outlined">bar_chart</span>
+          <span className="text-sm">{t('nav.analytics')}</span>
         </a>
         <a
           href="#"
