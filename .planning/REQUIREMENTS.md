@@ -14,9 +14,9 @@
 
 ### Batch History
 
-- [ ] **HIST-01**: User can view a listing of all past batches with status, date, and document count
-- [ ] **HIST-02**: User can filter batch history by status, date range, and document type
-- [ ] **HIST-03**: User can re-process a failed batch from the history listing
+- [x] **HIST-01**: User can view a listing of all past batches with status, date, and document count
+- [x] **HIST-02**: User can filter batch history by status, date range, and document type
+- [x] **HIST-03**: User can re-process a failed batch from the history listing
 
 ## v2 Requirements
 
@@ -51,9 +51,9 @@
 | ANAL-02 | Phase 1 | Complete |
 | ANAL-03 | Phase 1 | Complete |
 | ANAL-04 | Phase 1 | Complete |
-| HIST-01 | Phase 2 | Pending |
-| HIST-02 | Phase 2 | Pending |
-| HIST-03 | Phase 2 | Pending |
+| HIST-01 | Phase 2 | Complete |
+| HIST-02 | Phase 2 | Complete |
+| HIST-03 | Phase 2 | Complete |
 
 **Coverage:**
 - v1 requirements: 7 total

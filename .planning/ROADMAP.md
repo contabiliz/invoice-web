@@ -17,7 +17,7 @@
 | # | Name | Goal | Requirements | Success Criteria |
 |---|------|------|-------------|------------------|
 | 1 | Analytics Dashboard | 2/2 | Complete    | 2026-04-04 |
-| 2 | Batch History | Implement batch history listing with filtering and re-processing | HIST-01, HIST-02, HIST-03 | 3 |
+| 2 | Batch History | 1/1 | Complete    | 2026-04-04 |
 
 ## Phase Details
 
