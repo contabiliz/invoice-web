@@ -38,19 +38,18 @@ export function BatchStatusView({ batchId }: BatchStatusViewProps) {
   };
 
   // Offline handling — PRD §03.4 ADR-003
+  // useBatchStatus hook already invalidates queries on 'online', so this effect
+  // only clears the UI banner. No double-invalidation risk.
   useEffect(() => {
     const handleOffline = () => setIsOffline(true);
-    const handleOnline = () => {
-      setIsOffline(false);
-      queryClient.invalidateQueries({ queryKey: ['batch-status', batchId] });
-    };
+    const handleOnline = () => setIsOffline(false);
     window.addEventListener('offline', handleOffline);
     window.addEventListener('online', handleOnline);
     return () => {
       window.removeEventListener('offline', handleOffline);
       window.removeEventListener('online', handleOnline);
     };
-  }, [batchId, queryClient]);
+  }, []);
 
   const isLoading = phase === 'loading';
 
@@ -90,6 +89,17 @@ export function BatchStatusView({ batchId }: BatchStatusViewProps) {
     <div className="px-6 py-6 space-y-5 max-w-5xl">
       {/* Offline toast */}
       {isOffline && (
+        <div
+          role="alert"
+          className="flex items-center gap-2 rounded-lg border border-[var(--color-status-warning)] bg-[var(--color-status-warning-bg)] px-3 py-2 text-sm text-[var(--color-status-warning)]"
+        >
+          <WifiOff size={15} className="shrink-0" />
+          {t('errors.polling_network')}
+        </div>
+      )}
+
+      {/* Polling error toast — server-side errors (5xx/429/connection refused) */}
+      {phase === 'polling_error' && !isOffline && (
         <div
           role="alert"
           className="flex items-center gap-2 rounded-lg border border-[var(--color-status-warning)] bg-[var(--color-status-warning-bg)] px-3 py-2 text-sm text-[var(--color-status-warning)]"
