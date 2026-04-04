@@ -235,5 +235,35 @@
     "topbar": {
       "search_placeholder": "Buscar hash ou documento..."
     }
+  },
+  "analytics": {
+    "page_title": "Analytics",
+    "kpi_total": "Total de documentos",
+    "kpi_success_rate": "Taxa de sucesso",
+    "kpi_failures": "Falhas",
+    "chart_title": "Volume de processamento",
+    "chart_empty": "Nenhum dado disponivel para o periodo selecionado.",
+    "chart_toggle_bars": "Barras",
+    "chart_toggle_lines": "Linhas",
+    "preset_7d": "7 dias",
+    "preset_30d": "30 dias",
+    "preset_90d": "90 dias",
+    "preset_mtd": "Mes atual",
+    "table_title": "Detalhamento por documento",
+    "table_col_type": "Tipo",
+    "table_col_status": "Status",
+    "table_col_time": "Tempo",
+    "table_col_result": "Resultado",
+    "table_col_date": "Data",
+    "table_empty": "Nenhum documento encontrado.",
+    "table_pagination": "{total} documentos",
+    "table_prev": "Anterior",
+    "table_next": "Proxima",
+    "export_button": "Exportar CSV",
+    "export_button_exporting": "Exportando",
+    "errors": {
+      "load_failed": "Nao foi possivel carregar os dados. Tente novamente.",
+      "export_no_data": "Nenhum dado disponivel para exportacao."
+    }
   }
 }
