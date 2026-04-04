@@ -1,0 +1,104 @@
+{
+  "upload": {
+    "page_title": "Upload de documentos fiscais",
+    "page_description": "Envie XML NF-e, PDF DANFE ou imagens de cupom térmico",
+    "dropzone_instruction": "Arraste arquivos aqui ou clique para selecionar",
+    "dropzone_accepted_types": "XML NF-e · PDF DANFE · JPEG, PNG, WebP, TIFF",
+    "dropzone_limits": "Máx. 50 MB por arquivo · até 500 documentos",
+    "button_submit": "Enviar batch",
+    "button_preparing": "Preparando upload…",
+    "button_uploading": "Enviando…",
+    "button_confirming": "Verificando documentos…",
+    "button_retry": "Tentar novamente",
+    "button_view_batch": "Ver batch",
+    "button_view_now": "Ver status agora",
+    "button_reload": "Recarregar página",
+    "button_remove_file": "Remover arquivo",
+    "button_see_all": "Ver todos os arquivos",
+    "summary_count": "{validCount} de {totalCount} arquivos · {totalSize}",
+    "progress_global_label": "Progresso geral do upload",
+    "progress_file_label": "Progresso de {filename}",
+    "counter_sent": "{completed} de {total} enviados",
+    "success_full": "{count} documentos enviados com sucesso.",
+    "success_full_redirect": "Redirecionando para o status do batch…",
+    "success_partial_warning": "{confirmed} documentos enviados, {failed} falharam na verificação.",
+    "success_partial_failed_label": "Documentos que falharam na verificação:",
+    "offline_banner": "Sem conexão — uploads pausados. Aguardando reconexão…",
+    "rate_limit_countdown": "Aguarde {seconds}s para tentar novamente",
+    "errors": {
+      "session_expired": "Sua sessão expirou. Faça login novamente.",
+      "invalid_file": "Arquivo inválido: tipo ou tamanho não suportado.",
+      "rate_limited": "Muitas tentativas. Aguarde 1 minuto e tente novamente.",
+      "backpressure": "O sistema está ocupado. Tente novamente em alguns instantes.",
+      "server_error": "Erro interno. Tente novamente.",
+      "network": "Sem conexão com o servidor. Verifique sua internet.",
+      "batch_not_found": "Batch não encontrado. Recarregue a página e tente novamente.",
+      "batch_conflict": "Este batch já foi processado.",
+      "upload_url_expired": "URL de upload expirada. Renovando…",
+      "upload_permission_denied": "Permissão negada no armazenamento.",
+      "upload_invalid_file": "Arquivo inválido para o armazenamento.",
+      "upload_network_timeout": "Falha de conexão durante o upload.",
+      "validation_mime": "Tipo de arquivo não suportado.",
+      "validation_size": "Arquivo muito grande (máx 50 MB)."
+    }
+  },
+  "batch-status": {
+    "header": {
+      "created_ago": "Criado {time}"
+    },
+    "kpi": {
+      "total": "Total",
+      "completed": "Concluídos",
+      "processing": "Processando",
+      "failed": "Falhou"
+    },
+    "status": {
+      "completed": "Concluído",
+      "processing": "Processando",
+      "queued": "Na fila",
+      "failed": "Falhou",
+      "pending": "Aguardando"
+    },
+    "tabs": {
+      "all": "Todos",
+      "completed": "Concluídos",
+      "processing": "Processando",
+      "failed": "Falhou"
+    },
+    "polling": {
+      "updating": "Atualizando…"
+    },
+    "banner": {
+      "completed": "Batch concluído com sucesso",
+      "partial_failure": "{completed} concluídos, {failed} falharam",
+      "failed": "Todos os documentos falharam",
+      "action_new_upload": "Novo upload",
+      "action_view_analytics": "Ver analytics"
+    },
+    "table": {
+      "col_filename": "Arquivo",
+      "col_type": "Tipo",
+      "col_status": "Status",
+      "col_reason": "Razão",
+      "col_updated": "Atualizado",
+      "empty_tab": "Nenhum documento nesta categoria",
+      "pagination": "Página {current} de {total}"
+    },
+    "errors": {
+      "not_found": "Batch não encontrado ou sem permissão.",
+      "polling_network": "Sem conexão — tentando reconectar…",
+      "server_error": "Erro no servidor — tentando novamente…",
+      "back_to_upload": "Voltar para upload",
+      "doc": {
+        "object_not_found": "Arquivo não encontrado no storage",
+        "classifier_timeout": "Tempo de processamento excedido",
+        "invalid_xml": "XML inválido ou corrompido",
+        "unsupported_format": "Formato de arquivo não suportado",
+        "ocr_failed": "Falha no reconhecimento de texto (OCR)",
+        "duplicate_key": "Documento já processado anteriormente",
+        "schema_validation_failed": "Documento fora do padrão fiscal esperado",
+        "unknown": "Falha no processamento — contate o suporte"
+      }
+    }
+  }
+}
