@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Design Tokens — Light Mode ─── */
+:root {
+  --color-bg-base: #fafafa;
+  --color-bg-surface: #ffffff;
+  --color-bg-subtle: #f4f4f5;
+  --color-bg-muted: #e4e4e7;
+
+  --color-border: #d4d4d8;
+  --color-border-strong: #a1a1aa;
+
+  --color-text-primary: #09090b;
+  --color-text-secondary: #52525b;
+  --color-text-disabled: #a1a1aa;
+
+  --color-accent: #0070f3;
+  --color-accent-hover: #0060d0;
+  --color-accent-subtle: #eff6ff;
+
+  --color-status-success: #16a34a;
+  --color-status-success-bg: #f0fdf4;
+  --color-status-warning: #d97706;
+  --color-status-warning-bg: #fffbeb;
+  --color-status-error: #dc2626;
+  --color-status-error-bg: #fef2f2;
+  --color-status-neutral: #71717a;
+  --color-status-neutral-bg: #f4f4f5;
+}
+
+/* ─── Dark Mode ─── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-base: #0a0a0a;
+    --color-bg-surface: #171717;
+    --color-bg-subtle: #1c1c1e;
+    --color-bg-muted: #27272a;
+
+    --color-border: #3f3f46;
+    --color-border-strong: #52525b;
+
+    --color-text-primary: #fafafa;
+    --color-text-secondary: #a1a1aa;
+    --color-text-disabled: #52525b;
+
+    --color-accent: #3b82f6;
+    --color-accent-hover: #60a5fa;
+    --color-accent-subtle: #0c1a2e;
+
+    --color-status-success: #4ade80;
+    --color-status-success-bg: #052e16;
+    --color-status-warning: #fcd34d;
+    --color-status-warning-bg: #1c1400;
+    --color-status-error: #f87171;
+    --color-status-error-bg: #2d0a0a;
+    --color-status-neutral: #a1a1aa;
+    --color-status-neutral-bg: #1c1c1e;
+  }
+}
+
+/* ─── Base ─── */
+body {
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-family: var(--font-inter), Inter, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Mono utility ─── */
+.font-mono-tabular {
+  font-family: var(--font-jetbrains-mono), 'JetBrains Mono', 'Fira Code', monospace;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* ─── Sovereign Ledger Utilities ─── */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+.mono-font {
+  font-family: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.display-font {
+  font-family: var(--font-manrope), 'Manrope', sans-serif;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
