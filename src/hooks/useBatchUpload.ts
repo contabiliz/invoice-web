@@ -352,8 +352,8 @@ export function useBatchUpload() {
 
   // ── uploadSingleFile ────────────────────────────────────────────────────────
   const uploadSingleFile = useCallback(
-    async (entry: FileItemState): Promise<void> => {
-      if (!entry.uploadUrl) return;
+    async (entry: FileItemState): Promise<boolean> => {
+      if (!entry.uploadUrl) return false;
 
       dispatch({
         type: "SET_UPLOAD_STATUS",
@@ -380,6 +380,7 @@ export function useBatchUpload() {
           internalId: entry.internalId,
           status: "done",
         });
+        return true;
       } catch (err) {
         const axiosErr = err as AxiosError;
         const status = axiosErr.response?.status;
@@ -427,7 +428,7 @@ export function useBatchUpload() {
                 internalId: entry.internalId,
                 status: "done",
               });
-              return;
+              return true;
             } catch {
               dispatch({
                 type: "SET_UPLOAD_STATUS",
@@ -435,7 +436,7 @@ export function useBatchUpload() {
                 status: "error",
                 error: STORAGE_ERROR_KEYS.URL_EXPIRED,
               });
-              return;
+              return false;
             }
           }
           // 403 sem URL expirada = permissão negada
@@ -445,7 +446,7 @@ export function useBatchUpload() {
             status: "error",
             error: STORAGE_ERROR_KEYS.PERMISSION_DENIED,
           });
-          return;
+          return false;
         }
 
         if (status === 400) {
@@ -463,6 +464,7 @@ export function useBatchUpload() {
             error: STORAGE_ERROR_KEYS.NETWORK_TIMEOUT,
           });
         }
+        return false;
       }
     },
     [],
@@ -539,18 +541,17 @@ export function useBatchUpload() {
         documentId: presignResponse.documents[i].document_id,
       }));
 
+      const successIds: string[] = [];
       const tasks = updatedEntries.map(
-        (entry) => () => uploadSingleFile(entry),
+        (entry) => async () => {
+          const ok = await uploadSingleFile(entry);
+          if (ok && entry.documentId) successIds.push(entry.documentId);
+        },
       );
       await uploadWithConcurrency(tasks, 4);
 
       // Confirm com apenas os uploads bem-sucedidos
       dispatch({ type: "SET_PHASE", phase: "confirming" });
-
-      const successIds = state.fileIds
-        .map((id) => state.files[id])
-        .filter((f) => f.uploadStatus === "done" && f.documentId)
-        .map((f) => f.documentId!);
 
       // Chama confirm
       await runConfirm(presignResponse.batch_id, successIds);
